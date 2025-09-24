@@ -1,7 +1,7 @@
-SavePlate – Food Waste Management System
+EcoBite – Food Waste Management System
 Project Overview
 
-SavePlate is a prototype system that helps reduce food waste and encourage food donation.
+EcoBite is a prototype system that helps reduce food waste and encourage food donation.
 Main features include:
 
 Food inventory management
