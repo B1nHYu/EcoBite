@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite Inventory</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { display:flex; justify-content:space-between; align-items:center; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    .status-near { color:#b00020; font-weight:700; }
+    .status-expired { color:#b00020; text-decoration: underline; }
+  </style>
+  <!-- 报表用的图表库 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>
+    EcoBite Inventory
+    <button onclick="logout()">Logout</button>
+  </h1>
+
+  <h2>Add Item</h2>
+  <input id="name" placeholder="Name" />
+  <input id="quantity" type="number" placeholder="Quantity" />
+  <select id="category">
+    <option>Pantry</option>
+    <option>Refrigerated</option>
+    <option>Frozen</option>
+  </select>
+  <input id="expiry" type="date" />
+  <button onclick="addItem()">Add</button>
+
+  <h2>Inventory</h2>
+  <table>
+    <thead><tr>
+      <th>Name</th><th>Qty</th><th>Category</th><th>Expiry</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody id="list"></tbody>
+  </table>
+
+  <h2>Report</h2>
+  <button onclick="report()">Show Report</button>
+  <canvas id="reportChart" height="120"></canvas>
+
+<script>
+// ======= Auth helpers (redirect if not logged in) =======
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersJSON(){ return { "Authorization": "Bearer " + getToken(), "Content-Type":"application/json" }; }
+function headersAuth(){ return { "Authorization": "Bearer " + getToken() }; }
+
+if (!getToken()) {
+  // 未登录 → 去独立登录页
+  location.href = "/login.html";
+}
+
+function logout(){
+  localStorage.removeItem("token");
+  location.href = "/login.html";
+}
+
+// ======= Inventory UI =======
+async function load() {
+  const res = await fetch("/inventory", { headers: headersAuth() });
+  if (res.status === 401) { location.href = "/login.html"; return; }
+  const items = await res.json();
+  list.innerHTML = "";
+  items.forEach(it => {
+    const tr = document.createElement("tr");
+    const statusClass =
+      it.status === "near_expiry" ? "status-near" :
+      it.status === "expired" ? "status-expired" : "";
+    tr.innerHTML = `
+      <td>${it.name}</td>
+      <td>${it.quantity}</td>
+      <td>${it.category}</td>
+      <td>${String(it.expiry_date).slice(0,10)}</td>
+      <td class="${statusClass}">${it.status}</td>
+      <td>
+        <button onclick="delItem(${it.id})">Delete</button>
+        <button onclick="donateItem(${it.id})">Donate</button>
+      </td>`;
+    list.appendChild(tr);
+  });
+}
+
+async function addItem() {
+  const body = { name: name.value, quantity: Number(quantity.value), category: category.value, expiry_date: expiry.value };
+  const res = await fetch("/inventory", {
+    method: "POST", headers: headersJSON(), body: JSON.stringify(body)
+  });
+  if (res.ok) load(); else {
+    const j = await res.json().catch(()=>({}));
+    alert(j.error || "Add failed");
+  }
+}
+
+async function delItem(id) {
+  if (!confirm("Delete?")) return;
+  await fetch("/inventory/" + id, { method:"DELETE", headers: headersAuth() });
+  load();
+}
+
+async function donateItem(id) {
+  await fetch("/inventory/" + id + "/donate", { method:"POST", headers: headersAuth() });
+  load();
+}
+
+// ======= Report (Chart.js) =======
+let reportChart = null;
+
+async function report() {
+  const res = await fetch("/report", { headers: headersAuth() });
+  const data = await res.json();
+  // 需要原始 JSON 证据的话，取消下一行注释：
+  // alert(JSON.stringify(data, null, 2));
+  renderReport(data);
+}
+
+function renderReport(data) {
+  const ctx = document.getElementById("reportChart").getContext("2d");
+
+  // 维度：类别 + 状态
+  const categoryLabels = ["Pantry", "Refrigerated", "Frozen"];
+  const categoryValues = categoryLabels.map(k => data[k] ?? 0);
+
+  const statusLabels = ["Available", "NearExpiry", "Expired", "Donated"];
+  const statusValues = statusLabels.map(k => data[k] ?? 0);
+
+  if (reportChart) reportChart.destroy();
+
+  reportChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [...categoryLabels, ...statusLabels],
+      datasets: [{
+        label: "Counts",
+        data: [...categoryValues, ...statusValues]
+        // 按要求不自定义颜色，使用默认
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: "EcoBite Report (Categories & Statuses)" }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+}
+
+load();
+</script>
+</body>
+</html>
