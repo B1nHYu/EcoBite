@@ -24,7 +24,7 @@ It allows users to manage food inventory, track expiry dates, and list surplus f
 
 | Home Page | Analytics Page |
 |------------|----------------|
-| ![Home](https://github.com/B1nHYu/EcoBite/blob/main/public/images/zhuyemian.png?raw=true)
+| ![Home](https://github.com/B1nHYu/EcoBite/blob/main/public/images/zhuyemian.jpg?raw=true)
 
 ---
 
