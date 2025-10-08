@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Notifications</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+      --warn:#d97706; --danger:#ef4444; --ok:#10b981; --primary:#2563eb;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+
+    header{background:url("https://images.unsplash.com/photo-1505575967455-40e256f73376?q=80&w=1600&auto=format&fit=crop") center/cover no-repeat;position:relative;padding:56px 20px;color:#fff}
+    header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+    .hero{position:relative;z-index:1;max-width:1000px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+    .hero h1{margin:0;font-size:34px;font-weight:900}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.light{background:#fff;color:#111}
+    .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
+
+    main{max-width:1000px;margin:20px auto;padding:0 16px;display:grid;gap:16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px}
+    .muted{color:var(--muted)}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:800}
+    .b-warn{background:#fff1dc;color:#9a5b08}
+    .b-danger{background:#fee2e2;color:#991b1b}
+    .b-ok{background:#e8fff6;color:#065f46}
+
+    .row{display:flex;gap:10px;align-items:center}
+    .pref{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .switch{appearance:none;width:42px;height:24px;background:#e5e7eb;border-radius:999px;position:relative;outline:0;cursor:pointer}
+    .switch:checked{background:#34d399}
+    .switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s}
+    .switch:checked::after{left:21px}
+
+    .list{display:grid;gap:10px}
+    .item{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;display:flex;justify-content:space-between;align-items:center}
+    .left{display:flex;gap:10px;align-items:center}
+    .dot{width:10px;height:10px;border-radius:50%}
+    .dot.warn{background:#f59e0b}
+    .dot.danger{background:#ef4444}
+    .dot.ok{background:#10b981}
+    .meta{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:6px}
+    .btn.small{padding:6px 10px;border-radius:8px}
+    .btn.secondary{background:#e5e7eb;color:#111}
+    .btn.primary{background:var(--primary);color:#fff}
+
+    .empty{padding:20px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Notifications</h1>
+        <div class="muted">Near-expiry, expired and donated summaries.</div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn light" onclick="goHome()">← Home</button>
+        <button class="btn light" onclick="goInventory()">Inventory</button>
+        <button class="btn ghost" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- preferences -->
+    <section class="card">
+      <div class="section-title">
+        <h3 style="margin:0">Preferences</h3>
+      </div>
+      <div class="pref">
+        <label class="row">
+          <input id="prefDaily" type="checkbox" class="switch">
+          <span>Daily reminder (simulate)</span>
+        </label>
+        <label class="row">
+          <input id="prefNearOnly" type="checkbox" class="switch">
+          <span>Only near-expiry</span>
+        </label>
+        <button class="btn secondary small" onclick="markAllRead()">Mark all as read</button>
+        <span id="countUnread" class="badge b-danger">0 unread</span>
+      </div>
+      <div class="muted" style="margin-top:6px">* 偏好仅存储在浏览器本地（localStorage），用于作业演示。</div>
+    </section>
+
+    <!-- near expiry -->
+    <section class="card">
+      <div class="section-title">
+        <h3 style="margin:0">Near-expiry (≤ 3 days) <span class="badge b-warn" id="cNear">0</span></h3>
+        <button class="btn small secondary" onclick="markSectionRead('near')">Mark section read</button>
+      </div>
+      <div class="list" id="listNear"></div>
+    </section>
+
+    <!-- expired -->
+    <section class="card">
+      <div class="section-title">
+        <h3 style="margin:0">Expired <span class="badge b-danger" id="cExpired">0</span></h3>
+        <button class="btn small secondary" onclick="markSectionRead('expired')">Mark section read</button>
+      </div>
+      <div class="list" id="listExpired"></div>
+    </section>
+
+    <!-- donated -->
+    <section class="card">
+      <div class="section-title">
+        <h3 style="margin:0">Donated <span class="badge b-ok" id="cDonated">0</span></h3>
+        <button class="btn small secondary" onclick="markSectionRead('donated')">Mark section read</button>
+      </div>
+      <div class="list" id="listDonated"></div>
+    </section>
+  </main>
+
+<script>
+/* ---- auth & nav ---- */
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+if (!getToken()) location.href="/login.html";
+function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
+function goHome(){ location.href="/"; }
+function goInventory(){ location.href="/index.html"; }
+
+function getUserKey(){
+  try { const payload = JSON.parse(atob(getToken().split(".")[1])); return payload.email || "user"; }
+  catch { return "user"; }
+}
+
+/* ---- state ---- */
+let ITEMS = [];
+let READ = {}; // { '<type>:<id>': true }
+let PREF = { daily:false, nearOnly:false };
+
+const storeKey = (k)=>`ecobite:${getUserKey()}:${k}`;
+
+function loadPrefs(){
+  try{ PREF = JSON.parse(localStorage.getItem(storeKey("notif:prefs"))) || PREF; }catch{}
+  document.getElementById("prefDaily").checked = !!PREF.daily;
+  document.getElementById("prefNearOnly").checked = !!PREF.nearOnly;
+}
+function savePrefs(){
+  PREF.daily = document.getElementById("prefDaily").checked;
+  PREF.nearOnly = document.getElementById("prefNearOnly").checked;
+  localStorage.setItem(storeKey("notif:prefs"), JSON.stringify(PREF));
+}
+document.getElementById("prefDaily").addEventListener("change", savePrefs);
+document.getElementById("prefNearOnly").addEventListener("change", savePrefs);
+
+function loadRead(){
+  try{ READ = JSON.parse(localStorage.getItem(storeKey("notif:read"))) || {}; }catch{}
+}
+function saveRead(){
+  localStorage.setItem(storeKey("notif:read"), JSON.stringify(READ));
+}
+
+/* ---- load & compute ---- */
+async function refresh(){
+  const res = await fetch("/inventory", { headers: headersAuth() });
+  if (res.status === 401) { location.href="/login.html"; return; }
+  ITEMS = await res.json();
+
+  // build sections
+  const today = new Date(); today.setHours(0,0,0,0);
+  const near = [], expired = [], donated = [];
+  for (const it of ITEMS){
+    const exp = new Date(it.expiry_date);
+    if (it.status === "donated") donated.push(it);
+    else if (exp < today) expired.push(it);
+    else {
+      const diff = Math.ceil((exp - today)/86400000);
+      if (diff <= 3) near.push(it);
+    }
+  }
+
+  renderList("Near", near);
+  renderList("Expired", expired);
+  renderList("Donated", donated);
+
+  document.getElementById("cNear").textContent = near.length;
+  document.getElementById("cExpired").textContent = expired.length;
+  document.getElementById("cDonated").textContent = donated.length;
+
+  updateUnreadCount();
+}
+
+function itemKey(type, id){ return `${type}:${id}`; }
+
+function renderList(type, arr){
+  const map = { Near:"listNear", Expired:"listExpired", Donated:"listDonated" };
+  const host = document.getElementById(map[type]);
+  host.innerHTML = "";
+  if (!arr.length){ host.innerHTML = `<div class="empty">No ${type.toLowerCase()} items.</div>`; return; }
+
+  for (const it of arr){
+    const k = itemKey(type.toLowerCase(), it.id);
+    const isRead = !!READ[k];
+    const cls = type==="Donated" ? "ok" : (type==="Expired" ? "danger" : "warn");
+    const meta = `${it.category} • exp ${String(it.expiry_date).slice(0,10)}`;
+    const html = `
+      <div class="item" style="opacity:${isRead?0.55:1}">
+        <div class="left">
+          <span class="dot ${cls}"></span>
+          <div>
+            <div><strong>${it.name}</strong></div>
+            <div class="meta">${meta}</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn small secondary" onclick="markRead('${k}', this)">${isRead?'Unread':'Mark read'}</button>
+          ${type!=="Donated" ? `<button class="btn small primary" onclick="toInventory()">View</button>` : ""}
+        </div>
+      </div>`;
+    host.insertAdjacentHTML("beforeend", html);
+  }
+}
+
+function markRead(k, btn){
+  READ[k] = !READ[k];
+  saveRead();
+  refresh();
+}
+function markSectionRead(section){
+  const list = document.querySelectorAll(`#list${capitalize(section)} .item`);
+  list.forEach(card=>{
+    const strong = card.querySelector("strong");
+    const id = findItemIdByName(strong?.textContent);
+    if (id != null){ READ[itemKey(section, id)] = true; }
+  });
+  saveRead();
+  refresh();
+}
+function markAllRead(){
+  for (const it of ITEMS){
+    ["near","expired","donated"].forEach(t => READ[itemKey(t, it.id)] = true);
+  }
+  saveRead();
+  refresh();
+}
+
+function findItemIdByName(name){
+  const it = ITEMS.find(x=>x.name===name);
+  return it ? it.id : null;
+}
+function updateUnreadCount(){
+  // 统计三类中未读的
+  const keys = new Set();
+  const today = new Date(); today.setHours(0,0,0,0);
+  for(const it of ITEMS){
+    const exp = new Date(it.expiry_date);
+    if (it.status==="donated") keys.add(itemKey("donated", it.id));
+    if (exp < today) keys.add(itemKey("expired", it.id));
+    else if (Math.ceil((exp - today)/86400000) <= 3) keys.add(itemKey("near", it.id));
+  }
+  let unread = 0;
+  keys.forEach(k => { if (!READ[k]) unread++; });
+  document.getElementById("countUnread").textContent = `${unread} unread`;
+}
+
+function toInventory(){ location.href="/index.html"; }
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ---- init ---- */
+loadPrefs(); loadRead(); refresh();
+</script>
+</body>
+</html>
