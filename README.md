@@ -1,19 +1,34 @@
-EcoBite – Food Waste Management System
-Project Overview
+# 🍃 EcoBite – Food Waste Management System
 
-EcoBite is a prototype system that helps reduce food waste and encourage food donation.
-Main features include:
+![License](https://img.shields.io/badge/license-MIT-green)
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![Version](https://img.shields.io/badge/version-1.0-blue)
 
-Food inventory management
+---
 
-Expiry date alerts
+## 🧾 Project Overview
+**EcoBite** is a prototype web system that helps reduce food waste and encourage food donation.  
+It allows users to manage food inventory, track expiry dates, and list surplus food for donation.
 
-Donation listing and claiming
+---
 
-Basic analytics
+## 🚀 Main Features
+- 🗂️ **Food inventory management** — track stored food items easily  
+- ⏰ **Expiry date alerts** — get reminders for items nearing expiry  
+- 🤝 **Donation listing and claiming** — share or claim surplus food  
+- 📊 **Basic analytics** — visualize donation and waste statistics  
 
-Team Members
+---
 
-Bin Hangyu (B2400298)
+## 🖼️ System Preview
 
-Zhang Wenzhe (B2400713)
+| Home Page | Analytics Page |
+|------------|----------------|
+| ![Home](https://github.com/B1nHYu/EcoBite/blob/main/public/images/index_hero.jpg?raw=true) | ![Analytics](https://github.com/B1nHYu/EcoBite/blob/main/public/images/analytics_hero.jpg?raw=true) |
+
+---
+
+## ⚙️ Installation
+```bash
+npm install
+node server.js
