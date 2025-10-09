@@ -66,7 +66,7 @@
   </header>
 
   <main>
-    <!-- 左侧：库存可拖拽 -->
+    <!-- Left side: Inventory can be dragged -->
     <section class="card sidebar">
       <div class="toolbar">
         <input id="week" type="date" />
@@ -77,10 +77,10 @@
       </div>
       <h3>Inventory</h3>
       <div class="inv-list" id="invList"></div>
-      <div class="muted" style="margin-top:8px">* 临期与过期食材会高亮，建议优先使用。</div>
+      <div class="muted" style="margin-top:8px">* Ingredients that are near or past their expiration date will be highlighted, and it is recommended to use them first.。</div>
     </section>
 
-    <!-- 右侧：周计划 7 × 3 -->
+    <!-- Right side: Weekly Plan 7 × 3 -->
     <section class="card">
       <div class="footer">
         <div>Week of <span class="badge" id="weekText"></span></div>
@@ -108,10 +108,10 @@ const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 function userKey(){
   try{ const p = JSON.parse(atob(getToken().split(".")[1])); return p.email || "user"; }catch{ return "user"; }
 }
-function storeKey(date){ return `ecobite:${userKey()}:planner:${date}`; } // date 为周一
+function storeKey(date){ return `ecobite:${userKey()}:planner:${date}`; } // date is Monday
 
 /* ===== utils ===== */
-function startOfWeek(d){ // 周一为一周开始
+function startOfWeek(d){ // Monday is the start of the week
   const dt = new Date(d); const day = (dt.getDay()+6)%7; // Mon=0
   dt.setDate(dt.getDate()-day); dt.setHours(0,0,0,0);
   return dt;
@@ -154,7 +154,7 @@ function renderGrid(){
   const wk = startOfWeek(weekStr);
   document.getElementById("weekText").textContent = fmt(wk);
 
-  // 载入本周计划
+  // Load this week's schedule
   const saved = localStorage.getItem(storeKey(fmt(wk)));
   PLAN = saved ? JSON.parse(saved) : {};
 
@@ -171,7 +171,7 @@ function renderGrid(){
     cell.addEventListener("dragover", (e)=>e.preventDefault());
     cell.addEventListener("drop", onDropCell);
 
-    // 三个餐次
+    // Three meals
     MEALS.forEach(meal=>{
       const list = (PLAN[dateKey]?.[meal]) || [];
       const section = document.createElement("div");
@@ -196,7 +196,7 @@ function onDragStart(e){ e.dataTransfer.setData("text/plain", e.target.dataset.p
 function onDropCell(e){
   e.preventDefault();
   const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-  // 如果拖到整格，默认放到 lunch
+  // If dragged to a full grid, it will be placed by default lunch
   placeTo(e.currentTarget.dataset.date, "lunch", data);
 }
 function onDropSlot(e){
@@ -244,3 +244,4 @@ refresh();
 </script>
 </body>
 </html>
+
