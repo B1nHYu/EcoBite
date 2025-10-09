@@ -11,7 +11,7 @@
     .status-near { color:#b00020; font-weight:700; }
     .status-expired { color:#b00020; text-decoration: underline; }
   </style>
-  <!-- 报表用的图表库 -->
+  <!-- Chart library for reports -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -50,7 +50,7 @@ function headersJSON(){ return { "Authorization": "Bearer " + getToken(), "Conte
 function headersAuth(){ return { "Authorization": "Bearer " + getToken() }; }
 
 if (!getToken()) {
-  // 未登录 → 去独立登录页
+  // Not logged in → Go to the standalone login page
   location.href = "/login.html";
 }
 
@@ -112,7 +112,7 @@ let reportChart = null;
 async function report() {
   const res = await fetch("/report", { headers: headersAuth() });
   const data = await res.json();
-  // 需要原始 JSON 证据的话，取消下一行注释：
+  // If you need the original JSON evidence, uncomment the next line：
   // alert(JSON.stringify(data, null, 2));
   renderReport(data);
 }
@@ -120,7 +120,7 @@ async function report() {
 function renderReport(data) {
   const ctx = document.getElementById("reportChart").getContext("2d");
 
-  // 维度：类别 + 状态
+  // Dimension: Category   Status
   const categoryLabels = ["Pantry", "Refrigerated", "Frozen"];
   const categoryValues = categoryLabels.map(k => data[k] ?? 0);
 
@@ -136,7 +136,7 @@ function renderReport(data) {
       datasets: [{
         label: "Counts",
         data: [...categoryValues, ...statusValues]
-        // 按要求不自定义颜色，使用默认
+        // Do not customize colors as required, use the default.
       }]
     },
     options: {
@@ -156,3 +156,4 @@ load();
 </script>
 </body>
 </html>
+
