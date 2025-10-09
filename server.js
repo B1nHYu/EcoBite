@@ -19,16 +19,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ----------- 简单请求日志，方便排查（可留可删） -----------
+// ----------- Simple request log for troubleshooting -----------
 app.use((req, _res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
-// ----------- 静态文件 + 默认首页 -----------
+// ----------- Static files   Default homepage -----------
 app.use(express.static(PUBLIC_DIR, { index: "home.html" }));
 
-// ----------- 友好路由（无 .html 后缀可以打开） -----------
+// ----------- Friendly routing -----------
 app.get(["/", "/home"], (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "home.html"));
 });
@@ -36,8 +36,7 @@ app.get("/login", (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "login.html"));
 });
 
-// 注意：/inventory 是 API（见下方），不要重名作为页面路由。
-// 如果你想给库存页一个无后缀别名，可以这样：/inventory-page
+// If you want to give the inventory page a suffix-free alias, you can do it like this.：/inventory-page
 app.get("/inventory-page", (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "index.html"));
 });
@@ -54,23 +53,23 @@ app.get("/notifications", (_req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, "notifications.html"));
 });
 
-// ----------- 通用 HTML 兜底（最后一道保险） -----------
-// 访问 /something 时，如果存在 src/public/something.html 就返回它
+// ----------- Generic HTML fallback -----------
+// When accessing /something, return src/public/something.html if it exists.
 app.get("/:page", (req, res, next) => {
   const page = req.params.page;
 
-  // 避免与 API 冲突：inventory / report / auth/* 等直接放行给后面的 API
+  // Avoid conflicts with the API：inventory / report / auth/* Wait to directly release it to the ones behind. API
   const apiPrefixes = ["auth", "report"];
   if (page === "inventory" || apiPrefixes.some(p => page.startsWith(p))) return next();
 
   const candidate = path.join(PUBLIC_DIR, `${page}.html`);
   fs.access(candidate, fs.constants.F_OK, (err) => {
-    if (err) return next(); // 不存在就交给后续（404 或 API）
+    if (err) return next(); //If it doesn't exist, leave it to the subsequent process (404 or API)
     res.sendFile(candidate);
   });
 });
 
-// ----------- 调试端点：看看到底在读哪个目录 -----------
+// ----------- Debugging endpoint: Let's see which directory is being read -----------
 app.get("/__debug", (_req, res) => {
   fs.readdir(PUBLIC_DIR, (err, files) => {
     res.json({
@@ -81,7 +80,7 @@ app.get("/__debug", (_req, res) => {
   });
 });
 
-/* ======================  以下是你原有的 API  ====================== */
+/* ======================  The following are your original APIs  ====================== */
 
 /* ---------- Auth: Register / Login ---------- */
 app.post("/auth/register", async (req, res) => {
@@ -229,3 +228,4 @@ app.get("/report", authRequired, async (req, res) => {
 /* ---------------- Start server ---------------- */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
