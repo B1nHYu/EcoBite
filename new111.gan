@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><project name="EcoBite" company="" webLink="http://" view-date="2025-08-17" view-index="0" gantt-divider-location="653" resource-divider-location="300" version="3.3.3316" locale="zh_CN">
     <description/>
     <view zooming-state="default:4" id="gantt-chart">
-        <field id="tpd13" name="资源" width="21" order="0"/>
-        <field id="tpd9" name="前置任务" width="216" order="1"/>
-        <field id="tpd3" name="名称" width="216" order="2"/>
-        <field id="tpd4" name="开始日期" width="81" order="3"/>
-        <field id="tpd5" name="结束日期" width="81" order="4"/>
-        <field id="tpd11" name="大纲编号" width="22" order="5"/>
-        <field id="tpd15" name="备注" width="20" order="6"/>
+        <field id="tpd13" name="Resources" width="21" order="0"/>
+        <field id="tpd9" name="Prerequisite task" width="216" order="1"/>
+        <field id="tpd3" name="Name" width="216" order="2"/>
+        <field id="tpd4" name="Start Date" width="81" order="3"/>
+        <field id="tpd5" name="End Date" width="81" order="4"/>
+        <field id="tpd11" name="Outline Number" width="22" order="5"/>
+        <field id="tpd15" name="Note" width="20" order="6"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
@@ -16,8 +16,8 @@
         <option id="color.recent"><![CDATA[#cccccc #66ccff]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="名称" width="210" order="0"/>
-        <field id="1" name="默认角色" width="86" order="1"/>
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -188,3 +188,4 @@
     <previous/>
     <roles roleset-name="Default"/>
 </project>
+
