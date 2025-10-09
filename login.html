@@ -50,14 +50,14 @@
     }
 
     function goHome(){
-      // 如果已经登录，回首页；否则仍在登录页
+      // If you are already logged in, go to the homepage; otherwise, stay on the login page.
       if (localStorage.getItem("token")) location.href = "/";
     }
 
-    // 如果已登录，直接跳首页
+    // If already logged in, go directly to the homepage.
     if (localStorage.getItem("token")) {
-      // 也可以在这里校验 token 是否过期（调用一个受保护接口）
-      // 简化处理：直接跳
+      // You can also verify here whether the token has expired (by calling a protected API）
+      //Simplified handling: skip directly
       location.href = "/";
     }
 
@@ -77,7 +77,7 @@
         });
         const data = await res.json();
         if(!res.ok){ $("#msg").textContent = data.error || "Request failed"; return; }
-        // 保存 token 并跳转首页
+        //Save token And navigate to the homepage
         localStorage.setItem("token", data.token);
         location.href = "/";
       }catch(err){
@@ -87,3 +87,4 @@
   </script>
 </body>
 </html>
+
