@@ -1,35 +1,35 @@
 // src/auth.js  (ESM)
-// 依赖：npm i jsonwebtoken
+// Dependency：npm i jsonwebtoken
 import jwt from "jsonwebtoken";
 
-// —— 小工具：安全读取 SECRET（提前发现配置问题）——
+// —— Gadget: Safely Read SECRET (Detect Configuration Issues in Advance)——
 function requireSecret() {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    // 让错误在启动或首次用到时就显性暴露，避免“总是 401”
+    // Expose errors explicitly at startup or the first use to avoid 'always 401'.
     throw new Error("[auth] Missing JWT_SECRET in environment.");
   }
   return secret;
 }
 
 /**
- * 生成 JWT
+ * Generate JWT
  * @param {{id:number|string, email:string}} user
  * @param {{expiresIn?: string|number}} opts
  * @returns {string} token
  */
 export function signToken(user, opts = {}) {
   const secret = requireSecret();
-  const expiresIn = opts.expiresIn ?? "2h"; // 你原本就是 2h
+  const expiresIn = opts.expiresIn ?? "2h"; 
   const payload = { id: user.id, email: user.email };
   return jwt.sign(payload, secret, { expiresIn });
 }
 
 /**
- * 验证 JWT（工具函数，非中间件）
+ * Verify JWT (utility function, not middleware)
  * @param {string} token
  * @returns {{id:string|number, email:string, iat:number, exp:number}}
- * @throws 验证失败会抛错
+ * @throws Verification failure will throw an error
  */
 export function verifyToken(token) {
   const secret = requireSecret();
@@ -37,10 +37,10 @@ export function verifyToken(token) {
 }
 
 /**
- * 强制需要登录的中间件
- * - 从 Authorization: Bearer <token> 读取
- * - 验证通过把 payload 放到 req.user（{id,email}）
- * - 失败返回 401 JSON
+ * Middleware that requires mandatory login
+ * - Read from Authorization: Bearer <token>
+ * - After verification, place the payload into req.user ({id, email})
+ * - Failure returns 401 JSON
  */
 export function authRequired(req, res, next) {
   const auth = req.headers.authorization || "";
@@ -58,9 +58,9 @@ export function authRequired(req, res, next) {
 }
 
 /**
- * 可选登录（有则解析、无则忽略）
- * - 适合“既支持匿名也支持已登录”的接口
- * - 验证成功设置 req.user，失败则忽略，不拦截
+ * Optional login (parse if available, ignore if not)
+ * - Suitable for interfaces that support both anonymous and logged-in users
+ * - Verification successful: set req.user; if it fails, ignore it and do not block.
  */
 export function optionalAuth(req, _res, next) {
   const auth = req.headers.authorization || "";
@@ -69,7 +69,7 @@ export function optionalAuth(req, _res, next) {
   try {
     req.user = verifyToken(token);
   } catch {
-    // 忽略错误，不影响匿名访问
+    // Ignore errors, does not affect anonymous access
   }
   next();
 }
