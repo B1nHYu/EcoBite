@@ -13,7 +13,7 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
 
-    /*顶部导航*/
+    /*Top Navigation*/
     header{background: url("/images/analytics_hero.jpg") center/cover no-repeat;
   position: relative;
   padding: 56px 20px;
@@ -48,7 +48,7 @@
   </style>
 </head>
 <body>
-  <!-- 上面大标题区 -->
+  <!-- Top headline area -->
   <header>
     <div class="hero">
       <div>
@@ -64,7 +64,7 @@
   </header>
 
   <main>
-    <!-- 日期过滤区 -->
+    <!--Date Filter Area -->
     <section class="card">
       <div class="toolbar">
         <span class="tag" style="align-self:center">Date range</span>
@@ -75,10 +75,10 @@
         <button class="btn small" onclick="clearRange()">Clear</button>
         <button class="btn primary small" onclick="refresh()">Apply</button>
       </div>
-      <div class="muted" style="margin-top:6px">* 基于物品的 <b>expiry date</b> 进行过滤与统计</div>
+      <div class="muted" style="margin-top:6px">* Item-based <b>expiry date</b> Perform filtering and statistics</div>
     </section>
 
-    <!-- 第一排图：饼图+柱状图 -->
+    <!--First row of images: pie chart, bar chart -->
     <section class="grid-2">
       <div class="card">
         <div class="chart-header">
@@ -97,7 +97,7 @@
       </div>
     </section>
 
-    <!-- 第二排图：折线图 -->
+    <!-- Second row chart: line chart -->
     <section class="card">
       <div class="chart-header">
         <h3 class="chart-title">Expiry Timeline (by Month)</h3>
@@ -110,20 +110,20 @@
   <footer>© EcoBite Analytics</footer>
 
 <script>
-/* 登录和跳转相关 */
+/* Login and redirection related */
 function getToken(){ return localStorage.getItem("token") || ""; }
 function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
 if (!getToken()) location.href="/login.html";
 function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
 function goHome(){ location.href="/"; }
-function goInventory(){ location.href="/index.html"; }  // 去库存页
+function goInventory(){ location.href="/index.html"; }  // Go to inventory page
 
-/* 存数据的 */
+/*data storage*/
 let ITEMS = [];     
 let FILTERED = [];  
 let pieChart, barChart, lineChart;
 
-/* 刷新数据 */
+/* Refresh Data */
 async function refresh(){
   const res = await fetch("/inventory", { headers: headersAuth() });
   if (res.status === 401) { location.href="/login.html"; return; }
@@ -133,7 +133,7 @@ async function refresh(){
   drawAll();
 }
 
-/* 过滤日期 */
+/* Filter Date */
 function applyRange(){
   const from = document.getElementById("from").value;
   const to   = document.getElementById("to").value;
@@ -145,7 +145,7 @@ function applyRange(){
   });
 }
 
-/* 快速选择几天 */
+/* Quickly select a few days */
 function quick(days){
   const now = new Date();
   const from = new Date(now.getTime() - (days*24*60*60*1000));
@@ -159,7 +159,7 @@ function clearRange(){
   refresh();
 }
 
-/* 分类统计 */
+/* Categorical Statistics */
 function aggCategory(){
   const keys = ["Pantry","Refrigerated","Frozen"];
   const obj = { Pantry:0, Refrigerated:0, Frozen:0 };
@@ -185,7 +185,7 @@ function aggTimeline(){
   return { labels: keys, values: keys.map(k=>m.get(k)) };
 }
 
-/* 画图 */
+/* Draw a picture */
 function drawAll(){
   const pc = aggCategory();
   if (pieChart) pieChart.destroy();
@@ -212,15 +212,16 @@ function drawAll(){
   });
 }
 
-/* 下载图表 */
+/* Download chart */
 function downloadImage(chart, filename="chart.png"){
   const url = chart.toBase64Image();
   const a = document.createElement("a");
   a.href = url; a.download = filename; a.click();
 }
 
-/* 初始化 */
+/* Initialize */
 refresh();
 </script>
 </body>
 </html>
+
