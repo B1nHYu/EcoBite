@@ -57,12 +57,12 @@ function switchTab(m){
 }
 
 function qs(k){ return new URLSearchParams(location.search).get(k); }
-  const tabParam = qs("tab");              // 新增：读取 ?tab=register
+  const tabParam = qs("tab");              // Add: Read?tab=register
   if (tabParam === "register") switchTab("register");
 
 function goHome(){ location.href="/"; }
 
-// 如果已登录且不是强制切换账号，则直接回主页
+// If already logged in and not forced to switch accounts, go directly to the homepage.
 (function autoRedirect(){
   const token = localStorage.getItem("token");
   if (token && !force) location.href="/";
@@ -91,3 +91,4 @@ $("#form").addEventListener("submit", async (e)=>{
 </script>
 </body>
 </html>
+
