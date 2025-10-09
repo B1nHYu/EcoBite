@@ -13,7 +13,7 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
 
-    /* 顶部大图 */
+    /* Top image */
     header{background: url("/images/index_hero.jpg") center/cover no-repeat;
   position: relative;
   padding: 56px 20px;
@@ -32,13 +32,13 @@
     .muted{color:var(--muted)}
     .tag{padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700;font-size:12px}
 
-    /* 这几个小卡片数字 */
+    /* These few small card numbers */
     .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
     .kpi{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff}
     .kpi h4{margin:0 0 6px;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
     .kpi .num{font-size:22px;font-weight:800}
 
-    /* 表单 */
+    /* Form */
     .row{display:grid;gap:10px}
     .row.cols-5{grid-template-columns:1.2fr .7fr 1fr 1fr auto}
     .row.cols-4{grid-template-columns:1fr 1fr 1fr auto}
@@ -46,7 +46,7 @@
     .btn.primary{background:var(--primary);color:#fff}
     .btn.secondary{background:#e5e7eb;color:#111}
 
-    /* 列表表格 */
+    /* List table */
     table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden}
     th,td{padding:10px 8px;border-bottom:1px solid var(--border);font-size:14px;text-align:left}
     th{color:var(--muted);background:#fafafa;user-select:none;cursor:pointer}
@@ -57,16 +57,16 @@
     .b-expired{background:#fee2e2;color:#991b1b}
     .b-donated{background:#e8fff6;color:#065f46}
 
-    /* 批量操作条 */
+    /* Batch operation bar */
     .bulkbar{display:none;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 12px}
 
-    /* 右下角小提示 */
+    /* Small tip in the bottom right corner */
     .toast{position:fixed;right:18px;bottom:18px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.25s;z-index:999}
     .toast.show{opacity:1;transform:translateY(0)}
 
-    /* 编辑弹窗(一开始别显示) */
+    /* Edit popup (do not display initially)*/
     #editModal{
-      display:none;             /* 先别显示 */
+      display:none;             /* Don't show it yet */
       position:fixed; inset:0; background:rgba(0,0,0,.5);
       justify-content:center; align-items:center; z-index:1000;
     }
@@ -85,7 +85,7 @@
   </style>
 </head>
 <body>
-  <!-- 顶部 -->
+  <!-- Top-->
   <header>
     <div class="hero">
       <div>
@@ -100,7 +100,7 @@
   </header>
 
   <main>
-    <!-- 数字概览 -->
+    <!-- Digital Overview -->
     <section class="card">
       <div class="kpis">
         <div class="kpi"><h4>Total</h4><div class="num" id="kpiTotal">0</div></div>
@@ -111,7 +111,7 @@
       </div>
     </section>
 
-    <!-- 快速加 -->
+    <!-- Quick Add -->
     <section class="card">
       <div class="row cols-5">
         <span class="tag" style="align-self:center">Add Item</span>
@@ -128,7 +128,7 @@
       <div id="msgAdd" class="muted" style="margin-top:6px"></div>
     </section>
 
-    <!-- 筛选 + 导出 -->
+    <!-- Filter   Export -->
     <section class="card">
       <div class="row cols-4">
         <span class="tag" style="align-self:center">Filter</span>
@@ -157,7 +157,7 @@
       </div>
     </section>
 
-    <!-- 列表 -->
+    <!-- List -->
     <section class="card">
       <table>
         <thead>
@@ -175,7 +175,7 @@
       </table>
     </section>
 
-    <!-- 报表 -->
+    <!-- Report -->
     <section class="card">
       <h3 style="margin:0 0 10px">Report</h3>
       <canvas id="chart" height="130"></canvas>
@@ -184,7 +184,7 @@
 
   <footer>© EcoBite Inventory Management</footer>
 
-  <!-- 编辑弹窗 -->
+  <!--Edit popup -->
   <div id="editModal">
     <div id="editCard">
       <h3>Edit Item</h3>
@@ -203,11 +203,11 @@
     </div>
   </div>
 
-  <!-- 小提示框 -->
+  <!-- Tooltip -->
   <div class="toast" id="toast">Saved</div>
 
 <script>
-/* 常用的函数 */
+/* Commonly used functions */
 const $ = s => document.querySelector(s);
 function getToken(){ return localStorage.getItem("token") || ""; }
 function headersJSON(){ return { "Authorization":"Bearer "+getToken(), "Content-Type":"application/json" }; }
@@ -218,15 +218,15 @@ function goHome(){ location.href="/"; }
 function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
 function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1600); }
 
-/* 一些全局变量 */
+/* Some global variables*/
 let allItems = [];
 let sortKey = "expiry_date";
 let sortAsc = true;
 let chart;
 
-/* 一次拉全量数据 */
+/* Pull all the data at once */
 async function refreshAll(){
-  // 数字和图表用的
+  // For numbers and charts
   const r = await fetch("/report", { headers: headersAuth() }).then(r=>r.json());
   $("#kpiTotal").textContent = (r.Pantry||0) + (r.Refrigerated||0) + (r.Frozen||0);
   $("#kpiNear").textContent = r.NearExpiry||0;
@@ -234,7 +234,7 @@ async function refreshAll(){
   $("#kpiDon").textContent = r.Donated||0;
   $("#kpiAvail").textContent = r.Available||0;
 
-  // 清单
+  //Checklist
   const list = await fetch("/inventory", { headers: headersAuth() }).then(r=>r.json());
   allItems = list;
   render();
@@ -242,7 +242,7 @@ async function refreshAll(){
   drawChart(r);
 }
 
-/* 画上面的柱状图 */
+/* Draw the bar chart above */
 function drawChart(r){
   const ctx = document.getElementById("chart").getContext("2d");
   const catLabels = ["Pantry","Refrigerated","Frozen"];
@@ -257,7 +257,7 @@ function drawChart(r){
   });
 }
 
-/* 渲染 / 筛选 / 排序 */
+/* Render / Filter / Sort */
 function filtered(){
   const q = ($("#q").value||"").toLowerCase();
   const fc = $("#fcat").value;
@@ -308,7 +308,7 @@ function sortBy(key){
   render();
 }
 
-/* 批量操作 */
+/* Batch operation */
 function toggleAll(box){
   document.querySelectorAll(".rowcheck").forEach(ch=>ch.checked=box.checked);
   updateBulkBar();
@@ -341,7 +341,7 @@ async function bulkDelete(){
   refreshAll();
 }
 
-/* 增删改查 */
+/* Create, Read, Update, Delete (CRUD) */
 async function addItem(){
   $("#msgAdd").textContent="";
   const body = {
@@ -376,7 +376,7 @@ async function delItem(id){
   refreshAll();
 }
 
-/* 编辑弹窗逻辑 */
+/* Edit popup logic */
 let editingId = null;
 
 function openEdit(id){
@@ -405,7 +405,7 @@ async function saveEdit(){
   else alert("Update failed");
 }
 
-/* 导出CSV */
+/* Export CSV */
 function exportCSV(){
   const rows = filtered();
   const head = ["id","name","quantity","category","expiry_date","status"];
@@ -420,8 +420,9 @@ function exportCSV(){
 }
 function csv(s){ if(s==null) return ""; s=String(s).replace(/"/g,'""'); return `"${s}"`; }
 
-/* 开始跑 */
+/* Start running */
 refreshAll();
 </script>
 </body>
 </html>
+
