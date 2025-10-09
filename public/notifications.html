@@ -86,7 +86,7 @@
         <button class="btn secondary small" onclick="markAllRead()">Mark all as read</button>
         <span id="countUnread" class="badge b-danger">0 unread</span>
       </div>
-      <div class="muted" style="margin-top:6px">* 偏好仅存储在浏览器本地（localStorage），用于作业演示。</div>
+      <div class="muted" style="margin-top:6px">* Preferences are only stored locally in the browser (localStorage) and are used for assignment demonstrations.</div>
     </section>
 
     <!-- near expiry -->
@@ -247,7 +247,7 @@ function findItemIdByName(name){
   return it ? it.id : null;
 }
 function updateUnreadCount(){
-  // 统计三类中未读的
+  // Count the unread ones among the three categories
   const keys = new Set();
   const today = new Date(); today.setHours(0,0,0,0);
   for(const it of ITEMS){
@@ -269,3 +269,4 @@ loadPrefs(); loadRead(); refresh();
 </script>
 </body>
 </html>
+
