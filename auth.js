@@ -2,18 +2,18 @@
 // Dependency：npm i jsonwebtoken
 import jwt from "jsonwebtoken";
 
-// —— 小Tool: Safely read SECRET (detect configuration issues in advance)——
+// —— Gadget: Safely Read SECRET (Detect Configuration Issues in Advance)——
 function requireSecret() {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    // Expose errors explicitly during startup or upon first use, to avoid 'always 401'.”
+    // Expose errors explicitly at startup or the first use to avoid 'always 401'.
     throw new Error("[auth] Missing JWT_SECRET in environment.");
   }
   return secret;
 }
 
 /**
- *Generate JWT
+ * Generate JWT
  * @param {{id:number|string, email:string}} user
  * @param {{expiresIn?: string|number}} opts
  * @returns {string} token
@@ -37,7 +37,7 @@ export function verifyToken(token) {
 }
 
 /**
- *Middleware that requires mandatory login
+ * Middleware that requires mandatory login
  * - Read from Authorization: Bearer <token>
  * - After verification, place the payload into req.user ({id, email})
  * - Failure returns 401 JSON
@@ -60,7 +60,7 @@ export function authRequired(req, res, next) {
 /**
  * Optional login (parse if available, ignore if not)
  * - Suitable for interfaces that support both anonymous and logged-in users
- * -Verification successful: set req.user; if it fails, ignore and do not block.
+ * - Verification successful: set req.user; if it fails, ignore it and do not block.
  */
 export function optionalAuth(req, _res, next) {
   const auth = req.headers.authorization || "";
@@ -73,4 +73,3 @@ export function optionalAuth(req, _res, next) {
   }
   next();
 }
-
