@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Meal Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+      --primary:#2563eb; --ok:#10b981; --warn:#d97706;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+
+    header{
+      background:url("https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1600&auto=format&fit=crop") center/cover no-repeat;
+      position:relative;padding:56px 20px;color:#fff
+    }
+    header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+    .hero{
+      position:relative;z-index:1;max-width:1100px;margin:0 auto;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:16px
+    }
+    .hero h1{margin:0;font-size:34px;font-weight:900}
+    .btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.light{background:#fff;color:#111}
+    .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
+
+    main{
+      max-width:1100px;margin:20px auto;padding:0 16px;
+      display:grid;grid-template-columns:280px 1fr;gap:16px
+    }
+    .card{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;
+      padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)
+    }
+    .muted{color:var(--muted)}
+
+    /* sidebar */
+    .sidebar h3{margin:0 0 10px}
+    .inv-list{display:grid;gap:8px;max-height:60vh;overflow:auto}
+    .chip{
+      border:1px solid var(--border);border-radius:999px;padding:6px 10px;
+      background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px
+    }
+    .chip small{color:var(--muted)}
+    .chip[draggable="true"]{cursor:grab}
+
+    /* planner grid */
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    input[type="date"]{
+      padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff
+    }
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.secondary{background:#e5e7eb;color:#111}
+
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .col{display:grid;grid-template-rows:auto 1fr;gap:8px}
+    .col h4{margin:0;font-size:14px;color:#374151}
+    .cell{
+      border:1px dashed #cbd5e1;border-radius:12px;padding:10px;
+      min-height:120px;background:#fff
+    }
+    .slot{
+      border:1px solid #e5e7eb;border-radius:10px;padding:6px 8px;
+      margin:6px 0;background:#f8fafc
+    }
+    .slot-header{
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:4px
+    }
+    .slot-title{font-weight:700;text-transform:capitalize}
+    .items-list{font-size:13px;color:var(--muted)}
+    .item-row{display:flex;align-items:center;justify-content:space-between;margin:2px 0}
+    .item-name{margin-right:6px}
+    .del{
+      background:#fee2e2;color:#991b1b;border:none;border-radius:6px;
+      padding:2px 6px;cursor:pointer;font-size:11px
+    }
+    .empty{color:#9ca3af;font-size:12px}
+
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .badge{
+      display:inline-block;padding:2px 8px;border-radius:999px;
+      background:#eef2ff;color:#3730a3;font-weight:800;font-size:12px
+    }
+
+    @media(max-width: 980px){
+      main{grid-template-columns:1fr}
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Meal Planner</h1>
+        <div class="muted">Drag ingredients from inventory to plan your week.</div>
+      </div>
+      <div>
+        <button class="btn light" onclick="goHome()">← Home</button>
+        <button class="btn light" onclick="goInventory()">Inventory</button>
+        <button class="btn ghost" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 左侧：可拖拽库存 -->
+    <section class="card sidebar">
+      <div class="toolbar">
+        <input id="week" type="date" />
+        <button class="btn secondary" onclick="thisWeek()">This Week</button>
+        <button class="btn primary" onclick="savePlan()">Save</button>
+        <button class="btn secondary" onclick="clearPlan()">Clear</button>
+        <button class="btn secondary" onclick="exportJSON()">Export JSON</button>
+      </div>
+      <h3>Inventory</h3>
+      <div class="inv-list" id="invList"></div>
+      <div class="muted" style="margin-top:8px">
+        * Ingredients that are near or past their expiration date will be highlighted. Try to use them first.
+      </div>
+    </section>
+
+    <!-- 右侧：7×3 周计划 -->
+    <section class="card">
+      <div class="footer">
+        <div>Week of <span class="badge" id="weekText"></span></div>
+        <div class="muted">Slots: Breakfast / Lunch / Dinner</div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+<script>
+/* ========== Auth & Navigation ========== */
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+if (!getToken()) location.href="/login.html";
+
+function logout(){
+  localStorage.removeItem("token");
+  location.href="/login.html";
+}
+function goHome(){ location.href="/"; }
+function goInventory(){ location.href="/index.html"; }
+
+/* ========== Global State ========== */
+let INVENTORY = [];               // 后端 /inventory 返回的列表（会修改 quantity 做前端模拟）
+let PLAN = {};                    // 当前周计划 { 'YYYY-MM-DD': { breakfast:[], lunch:[], dinner:[] } }
+let CURRENT_WEEK = null;          // 当前周一日期字符串 YYYY-MM-DD
+
+const MEALS = ["breakfast","lunch","dinner"];
+const DAYS  = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+/* ========== Utils ========== */
+function userKey(){
+  try{
+    const p = JSON.parse(atob(getToken().split(".")[1]));
+    return p.email || "user";
+  }catch{
+    return "user";
+  }
+}
+function storeKey(weekMonday){ // weekMonday: YYYY-MM-DD（周一）
+  return `ecobite:${userKey()}:planner:${weekMonday}`;
+}
+
+function startOfWeek(d){ // 周一为一周开始
+  const dt = new Date(d);
+  const day = (dt.getDay()+6) % 7; // Mon=0
+  dt.setDate(dt.getDate() - day);
+  dt.setHours(0,0,0,0);
+  return dt;
+}
+function addDays(d, n){ const dt = new Date(d); dt.setDate(dt.getDate()+n); return dt; }
+function fmt(d){ return new Date(d).toISOString().slice(0,10); }
+
+/* ========== Plan Load / Save ========== */
+function loadPlanForCurrentWeek(){
+  const key = storeKey(CURRENT_WEEK);
+  const saved = localStorage.getItem(key);
+  PLAN = saved ? JSON.parse(saved) : {};
+}
+
+function savePlan(){
+  if (!CURRENT_WEEK) return;
+  const key = storeKey(CURRENT_WEEK);
+  localStorage.setItem(key, JSON.stringify(PLAN));
+  alert("Plan saved ✓");
+}
+
+function clearPlan(){
+  if (!CURRENT_WEEK) return;
+  if (!confirm("Clear current week plan?")) return;
+
+  const key = storeKey(CURRENT_WEEK);
+  PLAN = {};
+  localStorage.removeItem(key);
+  renderGrid();
+}
+
+/* ========== Inventory Load & Render ========== */
+async function refreshInventory(){
+  try{
+    const res = await fetch("/inventory", { headers: headersAuth() });
+    if (res.status === 401){ location.href="/login.html"; return; }
+    INVENTORY = await res.json();
+    renderInventory();
+  }catch(err){
+    console.error(err);
+    alert("Failed to load inventory");
+  }
+}
+
+function renderInventory(){
+  const host = document.getElementById("invList");
+  host.innerHTML = "";
+
+  for (const it of INVENTORY){
+    if (it.quantity <= 0) continue; // 数量 0 的不显示
+
+    const exp = new Date(it.expiry_date);
+    const highlight =
+      it.status === "expired"     ? "border:2px solid #ef4444" :
+      it.status === "near_expiry"? "border:2px solid #d97706" : "";
+
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.draggable = true;
+    chip.style = highlight;
+
+    chip.dataset.payload = JSON.stringify({
+      id:  it.id,
+      name:it.name,
+      qty: it.quantity,
+      cat: it.category,
+      exp: fmt(exp)
+    });
+
+    chip.innerHTML = `
+      <span>${it.name} <small>×${it.quantity}</small></span>
+      <small>${it.category} • exp ${fmt(exp)}</small>
+    `;
+
+    chip.addEventListener("dragstart", onDragStart);
+    host.appendChild(chip);
+  }
+}
+
+/* ========== Grid Render ========== */
+function renderGrid(){
+  const host = document.getElementById("grid");
+  host.innerHTML = "";
+
+  if (!CURRENT_WEEK){
+    document.getElementById("weekText").textContent = "-";
+    return;
+  }
+
+  const monday = new Date(CURRENT_WEEK);
+  document.getElementById("weekText").textContent = CURRENT_WEEK;
+  document.getElementById("week").value = CURRENT_WEEK;
+
+  for (let i = 0; i < 7; i++){
+    const day = addDays(monday, i);
+    const dateKey = fmt(day);
+
+    const col = document.createElement("div");
+    col.className = "col";
+    col.innerHTML = `<h4>${DAYS[i]} <span class="muted">${dateKey}</span></h4>`;
+
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.date = dateKey;
+    cell.addEventListener("dragover", e => e.preventDefault());
+    cell.addEventListener("drop", onDropCell);
+
+    MEALS.forEach(meal => {
+      const list = PLAN[dateKey]?.[meal] || [];
+
+      const section = document.createElement("div");
+      section.className = "slot";
+      section.dataset.date = dateKey;
+      section.dataset.meal = meal;
+      section.addEventListener("dragover", e => e.preventDefault());
+      section.addEventListener("drop", onDropSlot);
+
+      const header = document.createElement("div");
+      header.className = "slot-header";
+
+      const title = document.createElement("div");
+      title.className = "slot-title";
+      title.textContent = meal;
+
+      header.appendChild(title);
+
+      const content = document.createElement("div");
+      content.className = "items-list";
+
+      if (list.length){
+        // 每个食材一行 + 删除按钮
+        content.innerHTML = list.map(x => `
+          <div class="item-row">
+            <span class="item-name">${x.name} ×${x.qty}</span>
+            <button class="del"
+              onclick="removeItem('${dateKey}','${meal}',${x.id})">×</button>
+          </div>
+        `).join("");
+      }else{
+        content.innerHTML = "<span class='empty'>drop items here</span>";
+      }
+
+      section.appendChild(header);
+      section.appendChild(content);
+      cell.appendChild(section);
+    });
+
+    col.appendChild(cell);
+    host.appendChild(col);
+  }
+}
+
+/* ========== Drag & Drop ========== */
+function onDragStart(e){
+  e.dataTransfer.setData("text/plain", e.target.dataset.payload);
+}
+
+function onDropCell(e){
+  e.preventDefault();
+  e.stopPropagation();
+  const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+  // 整格默认丢到 lunch
+  const dateKey = e.currentTarget.dataset.date;
+  placeTo(dateKey, "lunch", data);
+}
+
+function onDropSlot(e){
+  e.preventDefault();
+  e.stopPropagation();
+  const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+  const dateKey = e.currentTarget.dataset.date;
+  const meal    = e.currentTarget.dataset.meal;
+  placeTo(dateKey, meal, data);
+}
+
+/**
+ * 拖拽放入某一天某一餐：
+ * - 询问使用数量
+ * - 减少 Inventory 中数量
+ * - 如果该餐已有同一种食材 → 合并数量
+ */
+function placeTo(dateKey, meal, item){
+  PLAN[dateKey] = PLAN[dateKey] || { breakfast:[], lunch:[], dinner:[] };
+  const max = Number(item.qty);
+
+  if (!max || max <= 0){
+    alert("No more stock left.");
+    return;
+  }
+
+  let qty = 1;
+  if (max > 1){
+    const input = prompt(`Use how many of "${item.name}"? (1 - ${max})`, "1");
+    if (input === null) return;
+    qty = Number(input);
+    if (!Number.isInteger(qty) || qty <= 0 || qty > max){
+      alert("Invalid quantity.");
+      return;
+    }
+  }
+
+  // 减少库存（仅前端）
+  const inv = INVENTORY.find(x => x.id == item.id);
+  if (inv){
+    inv.quantity -= qty;
+    if (inv.quantity < 0) inv.quantity = 0;
+  }
+
+  // 计划中若已有同一个 id → 合并数量
+  const slot = PLAN[dateKey][meal];
+  const existing = slot.find(x => x.id === item.id);
+  if (existing){
+    existing.qty += qty;
+  }else{
+    slot.push({
+      id: item.id,
+      name: item.name,
+      qty,
+      exp: item.exp,
+      cat: item.cat
+    });
+  }
+
+  renderInventory();
+  renderGrid();
+}
+
+/**
+ * 从某天某餐中删除一条食材，并把数量加回库存
+ */
+function removeItem(dateKey, meal, id){
+  const slot = PLAN[dateKey]?.[meal];
+  if (!slot) return;
+
+  const idx = slot.findIndex(x => x.id === id);
+  if (idx === -1) return;
+
+  const removed = slot[idx];
+
+  // 数量加回库存
+  const inv = INVENTORY.find(x => x.id === id);
+  if (inv){
+    inv.quantity += removed.qty;
+  }
+
+  slot.splice(idx, 1);
+
+  renderInventory();
+  renderGrid();
+}
+
+/* ========== Export JSON ========== */
+function exportJSON(){
+  if (!CURRENT_WEEK){
+    alert("No week selected");
+    return;
+  }
+  const blob = new Blob(
+    [JSON.stringify({ week: CURRENT_WEEK, plan: PLAN }, null, 2)],
+    { type:"application/json" }
+  );
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `meal-plan-${CURRENT_WEEK}.json`;
+  a.click();
+}
+
+/* ========== Week Change & Init ========== */
+function onWeekInputChange(e){
+  const monday = startOfWeek(e.target.value || new Date());
+  CURRENT_WEEK = fmt(monday);
+  loadPlanForCurrentWeek();
+  renderGrid();
+}
+
+// 绑定周选择器
+document.getElementById("week").addEventListener("change", onWeekInputChange);
+
+// 初始设为本周
+(function init(){
+  const monday = startOfWeek(new Date());
+  CURRENT_WEEK = fmt(monday);
+  document.getElementById("week").value = CURRENT_WEEK;
+  loadPlanForCurrentWeek();
+  renderGrid();
+  refreshInventory();
+})();
+</script>
+</body>
+</html>

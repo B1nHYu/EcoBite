@@ -26,7 +26,9 @@
       border:0; border-radius:10px;
       background:#111827; color:#fff; font-weight:600; cursor:pointer;
     }
-    button.secondary { background:#e5e7eb; color:#111827; }
+    button.secondary {
+      background:#e5e7eb; color:#111827;
+    }
 
     .tabs { display:flex; gap:8px; margin-bottom:8px; }
     .tabs button {
@@ -54,9 +56,10 @@
     <form id="form">
       <input id="email" type="email" placeholder="Email" required />
 
+      <!-- 密码 -->
       <input id="password" type="password" placeholder="Password" required />
 
-      <!-- 验证码区域（注册时显示） -->
+      <!-- 验证码（只在注册显示） -->
       <div id="code-area" style="display:none;">
         <div class="row">
           <input id="verificationCode" placeholder="Verification Code" />
@@ -74,30 +77,39 @@
   <script>
     const $ = (s)=>document.querySelector(s);
     let mode = "login";
+    let countdown = 0;
     let timer = null;
 
     function switchTab(m){
       mode = m;
+
       $("#tab-login").classList.toggle("active", m==="login");
       $("#tab-register").classList.toggle("active", m==="register");
+
       $("#primary").textContent = m==="login" ? "Login" : "Create account";
-      $("#subtitle").textContent = m==="login"
-        ? "Login to continue"
-        : "Create your EcoBite account";
+      $("#subtitle").textContent = m==="login" ? "Login to continue" : "Create your EcoBite account";
+
+      // 切换验证码区域显示
       $("#code-area").style.display = m === "register" ? "block" : "none";
+
       $("#msg").textContent = "";
     }
 
+    function goHome(){
+      if (localStorage.getItem("token")) location.href = "/";
+    }
+
+    // 发送验证码
     async function sendCode(){
       const email = $("#email").value.trim();
-      if(!email){
-        $("#msg").textContent = "Enter your email first";
+      if (!email){
+        $("#msg").textContent = "Please enter email first";
         return;
       }
 
       $("#msg").textContent = "";
 
-      try{
+      try {
         const res = await fetch("/auth/send-code", {
           method:"POST",
           headers:{ "Content-Type":"application/json" },
@@ -105,27 +117,29 @@
         });
 
         const data = await res.json();
+
         if(!res.ok){
           $("#msg").textContent = data.error || "Send failed";
           return;
         }
 
-        $("#msg").textContent = "Verification code sent! Check your email.";
+        $("#msg").textContent = "Verification code sent!";
         startCountdown();
-      }catch(err){
+      } catch(e){
         $("#msg").textContent = "Network error";
       }
     }
 
     function startCountdown(){
-      let count = 60;
+      countdown = 60;
       $("#sendCodeBtn").disabled = true;
-      $("#sendCodeBtn").textContent = `Sent (${count})`;
+      $("#sendCodeBtn").textContent = "Sent (60)";
 
       timer = setInterval(()=>{
-        count--;
-        $("#sendCodeBtn").textContent = `Sent (${count})`;
-        if(count<=0){
+        countdown--;
+        $("#sendCodeBtn").textContent = `Sent (${countdown})`;
+
+        if(countdown <= 0){
           clearInterval(timer);
           $("#sendCodeBtn").disabled = false;
           $("#sendCodeBtn").textContent = "Send Code";
@@ -133,15 +147,17 @@
       }, 1000);
     }
 
+    // Login / Register Form Submit
     $("#form").addEventListener("submit", async (e)=>{
       e.preventDefault();
+      $("#msg").textContent = "";
 
       const payload = {
         email: $("#email").value.trim(),
-        password: $("#password").value.trim()
+        password: $("#password").value
       };
 
-      if(mode==="register"){
+      if (mode === "register"){
         payload.verificationCode = $("#verificationCode").value.trim();
         if(!payload.verificationCode){
           $("#msg").textContent = "Enter verification code";
@@ -149,9 +165,9 @@
         }
       }
 
-      const url = mode==="login" ? "/auth/login" : "/auth/register";
-
       try{
+        const url = mode==="login" ? "/auth/login" : "/auth/register";
+
         const res = await fetch(url,{
           method:"POST",
           headers:{ "Content-Type":"application/json" },
@@ -159,23 +175,27 @@
         });
 
         const data = await res.json();
+
         if(!res.ok){
-          $("#msg").textContent = data.error || "Failed";
+          $("#msg").textContent = data.error || "Request failed";
           return;
         }
 
         if(mode==="login"){
           localStorage.setItem("token", data.token);
           location.href = "/";
-        } else {
-          $("#msg").textContent = "Registration successful! Please login.";
-          switchTab("login");
+          return;
         }
+
+        // Register success → switch to Login
+        switchTab("login");
+        $("#msg").textContent = "Account created! Please login.";
       }catch(err){
         $("#msg").textContent = "Network error";
       }
     });
 
+    // Auto jump if logged in
     if(localStorage.getItem("token")){
       location.href = "/";
     }
