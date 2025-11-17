@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg:#f6f7fb; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280; --primary:#111827;
+      --ring: 0 0 0 3px rgba(37,99,235,.2);
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text); background:var(--bg); }
+    a{ color:inherit; text-decoration:none; }
+    button{ cursor:pointer; }
+
+    /* Top Navigation */
+    header{ position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--border); }
+    .nav{ max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .nav-left,.nav-actions{ display:flex; gap:10px; align-items:center; }
+    .brand a{ font-weight:900; letter-spacing:.2px; padding:8px 10px; border-radius:10px; }
+    .link{ padding:8px 10px; border-radius:10px; border:1px solid transparent; }
+    .link:hover{ background:#f3f4f6; }
+    .btn{ border:1px solid var(--border); background:var(--primary); color:#fff; padding:8px 12px; border-radius:10px; font-weight:700; }
+    .btn.secondary{ background:#e5e7eb; color:#111827; }
+    .btn.ghost{ background:transparent; color:#111827; border:1px solid var(--border); }
+    .btn:focus-visible{ outline:none; box-shadow:var(--ring); }
+
+    /* Homepage Banner */
+    .hero{ max-width:1100px; margin:24px auto; padding:0 16px; display:grid; gap:20px; grid-template-columns:1.1fr 0.9fr; align-items:center; }
+    .hero h1{ margin:0 0 12px; font-size:36px; line-height:1.15; }
+    .hero p{ margin:0 0 16px; color:var(--muted); font-size:16px; }
+    .hero .cta{ display:flex; gap:10px; flex-wrap:wrap; }
+    .hero-img{ width:100%; border-radius:16px; border:1px solid var(--border); box-shadow:0 20px 50px rgba(0,0,0,.07); object-fit:cover; aspect-ratio:4/3; }
+
+    /* Card */
+    .card{ background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; transition:transform .12s, box-shadow .12s, border-color .12s; }
+    .card.click{ cursor:pointer; }
+    .card.click:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.07); border-color:#d1d5db; }
+    .card h3{ margin:0 0 8px; }
+    .muted{ color:var(--muted); }
+
+    /* Functional Area */
+    .features{ max-width:1100px; margin:8px auto 24px; padding:0 16px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+
+    /* Gallery */
+    .gallery{ max-width:1100px; margin:0 auto 24px; padding:0 16px; }
+    .grid-4{ display:grid; gap:10px; grid-template-columns:repeat(4,1fr); }
+    .gallery a{ display:block; border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+    .gallery img{ width:100%; height:140px; object-fit:cover; display:block; }
+    .gallery a:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.07); }
+
+    /* The panel displayed after logging in */
+    .dash{ max-width:1100px; margin:24px auto; padding:0 16px; display:none; gap:20px; grid-template-columns:2fr 1fr; }
+    .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .kpi{ background:#fff; border:1px solid var(--border); border-radius:12px; padding:12px; transition:transform .12s, box-shadow .12s, border-color .12s; cursor:pointer; }
+    .kpi:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,0,0,.06); border-color:#d1d5db; }
+    .kpi h4{ margin:0 0 6px; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+    .kpi .num{ font-size:22px; font-weight:800; }
+    table{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+    th,td{ padding:10px 8px; border-bottom:1px solid var(--border); text-align:left; font-size:14px; }
+    th{ color:var(--muted); background:#fafafa; }
+    tbody tr{ cursor:pointer; }
+    tbody tr:hover{ background:#f3f4f6; }
+    .form-row{ display:grid; grid-template-columns:1.2fr .6fr 1fr 1fr auto; gap:8px; }
+    input, select{ padding:10px; border:1px solid var(--border); border-radius:10px; }
+    .status-near{ color:#b00020; font-weight:700; }
+    .status-expired{ color:#b00020; text-decoration:underline; }
+
+    .section-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 6px; }
+    .section-head h2{ margin:0; font-size:18px; }
+
+    footer{ margin:32px 0 24px; text-align:center; color:var(--muted); font-size:13px; }
+
+    @media(max-width:920px){
+      .hero{ grid-template-columns:1fr; }
+      .features{ grid-template-columns:1fr; }
+      .grid-4{ grid-template-columns:repeat(2,1fr); }
+      .dash{ grid-template-columns:1fr; }
+      .kpis{ grid-template-columns:repeat(2,1fr); }
+      .form-row{ grid-template-columns:1fr; }
+      .btn{ width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="nav-left">
+        <div class="brand"><a href="/" class="link" aria-label="EcoBite Home">EcoBite</a></div>
+        <a class="link" href="/index.html">Inventory</a>
+        <a class="link" href="/analytics.html">Analytics</a>
+        <a class="link" href="/planner.html">Planner</a>
+        <a class="link" href="/notifications.html">Notifications</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn ghost" id="btnLogin" onclick="goLogin()">Login</button>
+        <button class="btn" id="btnRegister" onclick="goRegister()">Register</button>
+        <a class="btn secondary" id="btnInventory" href="/index.html" style="display:none;">Open Inventory</a>
+        <button class="btn" id="btnLogout" onclick="logout()" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Homepage main image introduction -->
+  <section class="hero">
+    <div>
+      <h1>Cut food waste. Save money. Eat smarter.</h1>
+      <p>EcoBite helps you track items, manage expiry dates, visualize data, and prioritize near-expiry usage.</p>
+      <div class="cta">
+        <!-- It doesn't display after logging in. -->
+        <button class="btn" id="ctaStart" onclick="goRegister()">Get Started Free</button>
+        <button class="btn secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Learn More</button>
+      </div>
+    </div>
+    <img class="hero-img" src="/images/hero.jpg" alt="Kitchen and groceries">
+  </section>
+
+  <!-- Function Introduction Area -->
+  <section class="features" id="features">
+    <a class="card click" href="/notifications.html" aria-label="Open Notifications">
+      <h3>Smart Alerts</h3>
+      <p class="muted">Near-expiry & expired items are highlighted so you can use them first.</p>
+    </a>
+    <a class="card click" href="/index.html" aria-label="Open Inventory">
+      <h3>One-Click Donate</h3>
+      <p class="muted">Mark donated items and track how much waste you avoided.</p>
+    </a>
+    <a class="card click" href="/analytics.html" aria-label="Open Analytics">
+      <h3>Visual Reports</h3>
+      <p class="muted">Category share and status trends—all at a glance.</p>
+    </a>
+  </section>
+
+<section class="gallery">
+  <div class="grid-4">
+    <img src="/images/veg.jpg" alt="Vegetables">
+    <img src="/images/pantry.jpg" alt="Pantry">
+    <img src="/images/fridge.jpg" alt="Fridge">
+    <img src="/images/cooking.jpg" alt="Cooking">
+  </div>
+</section>
+
+
+  <!-- Dashboard available after logging in -->
+  <section class="dash" id="dash">
+    <div>
+      <div class="section-head">
+        <h2>Overview</h2>
+        <a class="link" href="/analytics.html">Open Analytics →</a>
+      </div>
+      <div class="kpis">
+        <div class="kpi" onclick="to('/index.html')" title="Open Inventory">
+          <h4>Total</h4><div class="num" id="kpiTotal">0</div>
+        </div>
+        <div class="kpi" onclick="to('/notifications.html')" title="Near-expiry items">
+          <h4>Near Expiry</h4><div class="num" id="kpiNear">0</div>
+        </div>
+        <div class="kpi" onclick="to('/notifications.html')" title="Expired items">
+          <h4>Expired</h4><div class="num" id="kpiExpired">0</div>
+        </div>
+        <div class="kpi" onclick="to('/index.html')" title="Donations">
+          <h4>Donated</h4><div class="num" id="kpiDonated">0</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="section-head">
+          <h2>Recent Items</h2>
+          <a class="link" href="/index.html">Open Inventory →</a>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Qty</th><th>Category</th><th>Expiry</th><th>Status</th></tr></thead>
+          <tbody id="recent"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="card click" onclick="to('/index.html')" role="link" tabindex="0">
+        <div class="section-head">
+          <h2>Quick Add</h2>
+          <span class="muted">Add items and manage them in Inventory</span>
+        </div>
+        <div class="form-row" style="margin-top:6px;">
+          <input id="itemName" placeholder="Name"/>
+          <input id="itemQty" type="number" placeholder="Qty"/>
+          <select id="itemCat"><option>Pantry</option><option>Refrigerated</option><option>Frozen</option></select>
+          <input id="itemExp" type="date"/>
+          <button class="btn" onclick="event.stopPropagation(); quickAdd()">Add</button>
+        </div>
+        <p id="msg" class="muted" style="margin:8px 0 0;"></p>
+      </div>
+
+      <div class="card click" onclick="to('/analytics.html')" role="link" tabindex="0" style="margin-top:16px;">
+        <div class="section-head">
+          <h2>Report</h2>
+          <span class="muted">Tap to open full Analytics</span>
+        </div>
+        <canvas id="chart" height="150"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <footer>© EcoBite — reduce waste, eat smart.</footer>
+
+<script>
+/* Some commonly used functions */
+const $ = s => document.querySelector(s);
+function to(url){ location.href = url; }
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersJSON(){ return { "Authorization":"Bearer "+getToken(), "Content-Type":"application/json" }; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+function goLogin(){ location.href="/login.html"; }
+function goRegister(){ location.href="/login.html?tab=register"; }
+function logout(){ localStorage.removeItem("token"); location.reload(); }
+
+/* Initialize */
+(async function init(){
+  const authed = !!getToken();
+
+  // Toggle the button based on login status
+  $("#btnLogin").style.display     = authed ? "none" : "";
+  $("#btnRegister").style.display  = authed ? "none" : "";
+  $("#btnInventory").style.display = authed ? "" : "none";
+  $("#btnLogout").style.display    = authed ? "" : "none";
+
+  // The Start button does not appear after logging in
+  const cta = document.getElementById("ctaStart");
+  if (cta) cta.style.display = authed ? "none" : "";
+
+  if (authed){
+    document.getElementById("dash").style.display = "grid";
+    await Promise.all([loadKPIs(), drawReport()]);
+  }
+})();
+
+/*Panel data */
+async function loadKPIs(){
+  const report = await fetch("/report", { headers: headersAuth() }).then(r=>r.json());
+  $("#kpiTotal").textContent   = (report.Pantry||0) + (report.Refrigerated||0) + (report.Frozen||0);
+  $("#kpiNear").textContent    = report.NearExpiry || 0;
+  $("#kpiExpired").textContent = report.Expired || 0;
+  $("#kpiDonated").textContent = report.Donated || 0;
+
+  const items = await fetch("/inventory", { headers: headersAuth() }).then(r=>r.json());
+  const tbody = $("#recent"); tbody.innerHTML = "";
+  items.slice(0,5).forEach(it=>{
+    const cls = it.status==="near_expiry" ? "status-near" : it.status==="expired" ? "status-expired" : "";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${it.name}</td><td>${it.quantity}</td><td>${it.category}</td>
+                    <td>${String(it.expiry_date).slice(0,10)}</td><td class="${cls}">${it.status}</td>`;
+    tr.addEventListener("click", ()=>to('/index.html'));
+    tbody.appendChild(tr);
+  });
+}
+
+let chart;
+/* Small chart */
+async function drawReport(){
+  const data = await fetch("/report", { headers: headersAuth() }).then(r=>r.json());
+  const ctx = document.getElementById("chart").getContext("2d");
+  const catLabels = ["Pantry","Refrigerated","Frozen"];
+  const catValues = catLabels.map(k => data[k] ?? 0);
+  const statLabels = ["Available","NearExpiry","Expired","Donated"];
+  const statValues = statLabels.map(k => data[k] ?? 0);
+
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type:"bar",
+    data:{ labels:[...catLabels, ...statLabels], datasets:[{label:"Count", data:[...catValues, ...statValues]}] },
+    options:{
+      responsive:true,
+      plugins:{ legend:{display:false}, title:{display:true, text:"Inventory Overview"} },
+      scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } } },
+      onClick: () => to('/analytics.html')
+    }
+  });
+}
+
+/* Quickly add an item */
+async function quickAdd(){
+  const body = {
+    name: $("#itemName").value.trim(),
+    quantity: Number($("#itemQty").value),
+    category: $("#itemCat").value,
+    expiry_date: $("#itemExp").value
+  };
+  const msg = document.getElementById("msg");
+  const res = await fetch("/inventory", { method:"POST", headers: headersJSON(), body: JSON.stringify(body) });
+  if (res.ok){
+    msg.textContent = "Added ✓";
+    $("#itemName").value = ""; $("#itemQty").value=""; $("#itemCat").value="Pantry"; $("#itemExp").value="";
+    await Promise.all([loadKPIs(), drawReport()]);
+  } else {
+    const j = await res.json().catch(()=>({}));
+    msg.textContent = j.error || "Add failed";
+  }
+}
+</script>
+</body>
+</html>
+
