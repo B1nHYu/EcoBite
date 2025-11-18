@@ -216,6 +216,19 @@
       </div>
     </section>
 
+    <!-- SYSTEM NOTIFICATIONS -->
+    <section class="card">
+      <div class="section-title">
+        <h3>System Notifications</h3>
+        <span id="sysCount" class="badge b-ok">0</span>
+      </div>
+
+      <div class="list" id="sysList">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+
     <!-- NEAR EXPIRY -->
     <section class="card">
       <div class="section-title">
@@ -307,6 +320,43 @@ function saveRead(){
 ====================================================================================== */
 function itemKey(type,id){ return `${type}:${id}`; }
 
+
+/* ======================================================================================
+   SYSTEM NOTIFICATIONS
+====================================================================================== */
+async function loadSystemNotifications(){
+  const res = await fetch("/notifications", { headers: headersAuth() });
+  if(res.status === 401) return;
+
+  const rows = await res.json();
+  const host = document.getElementById("sysList");
+  host.innerHTML = "";
+  document.getElementById("sysCount").textContent = rows.length;
+
+  if(rows.length === 0){
+    host.innerHTML = `<div class="empty">No system notifications.</div>`;
+    return;
+  }
+
+  for(const n of rows){
+    host.insertAdjacentHTML("beforeend", `
+      <div class="item">
+        <div>
+          <strong>${n.title}</strong><br>
+          <span class="muted">${n.message}</span><br>
+          <span class="muted" style="font-size:12px">
+            ${new Date(n.created_at).toLocaleString()}
+          </span>
+        </div>
+      </div>
+    `);
+  }
+}
+
+
+
+
+
 /* ======================================================================================
    MAIN REFRESH (Fetch inventory)
 ====================================================================================== */
@@ -345,6 +395,8 @@ async function refresh(){
   document.getElementById("sum-total").textContent = `Total Items: ${ITEMS.length}`;
 
   updateUnreadCount();
+  loadSystemNotifications();
+
 }
 
 /* ======================================================================================
