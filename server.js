@@ -1,5 +1,5 @@
 // ================================
-// EcoBite Final Server (with Gmail OTP + Full Inventory CRUD)
+// EcoBite Final Server (with Gmail OTP + Notifications)
 // ================================
 
 import express from "express";
@@ -38,18 +38,17 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-
 async function createNotification(user_id, title, message) {
   try {
     await pool.query(
-      `INSERT INTO notifications (user_id, title, message) VALUES (?,?,?)`,
+      `INSERT INTO notifications (user_id, title, message)
+       VALUES (?,?,?)`,
       [user_id, title, message]
     );
   } catch (err) {
     console.error("Failed to create notification:", err);
   }
 }
-
 
 /* ======================================
    STATIC FILES
@@ -60,11 +59,12 @@ app.get("/login", (_req, res) =>
   res.sendFile(path.join(PUBLIC_DIR, "login.html"))
 );
 
+// allow pages routing except backend paths
 app.get("/:page", (req, res, next) => {
+  const skip = ["auth", "inventory", "report", "notifications"];
   const page = req.params.page;
-  const skip = ["auth", "inventory", "report"];
 
-  if (skip.some(x => page.startsWith(x))) return next();
+  if (skip.includes(page)) return next();
 
   const filePath = path.join(PUBLIC_DIR, `${page}.html`);
   fs.access(filePath, fs.constants.F_OK, err =>
@@ -75,6 +75,7 @@ app.get("/:page", (req, res, next) => {
 /* ======================================
    AUTH: SEND VERIFICATION CODE
 ====================================== */
+
 app.post("/auth/send-code", async (req, res) => {
   const { email } = req.body;
 
@@ -94,37 +95,33 @@ app.post("/auth/send-code", async (req, res) => {
       from: process.env.SMTP_FROM,
       to: email,
       subject: "Your EcoBite Verification Code",
-      html: `
-        <h2>Your EcoBite Verification Code</h2>
-        <h1>${code}</h1>
-        <p>Expires in ${expiresMinutes} minutes.</p>
-      `
+      html: `<h1>${code}</h1><p>Expires in ${expiresMinutes} minutes.</p>`
     });
 
     res.json({ message: "Verification code sent" });
   } catch (err) {
     res.status(500).json({ error: "Email sending failed" });
-    console.error(err);
   }
 });
 
 /* ======================================
    AUTH: REGISTER (OTP VALIDATION)
 ====================================== */
+
 app.post("/auth/register", async (req, res) => {
   const { email, password, verificationCode } = req.body;
 
   if (!email || !password)
     return res.status(400).json({ error: "Email & password required" });
 
-  const [codeRows] = await pool.query(
+  const [rows] = await pool.query(
     `SELECT * FROM verification_codes
      WHERE email=? AND code=? AND expires_at > NOW()
      ORDER BY id DESC LIMIT 1`,
     [email, verificationCode]
   );
 
-  if (!codeRows.length)
+  if (!rows.length)
     return res.status(400).json({ error: "Invalid or expired OTP" });
 
   try {
@@ -152,33 +149,23 @@ app.post("/auth/register", async (req, res) => {
 /* ======================================
    AUTH: LOGIN
 ====================================== */
+
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password)
-    return res.status(400).json({ error: "Email & password required" });
+  const [rows] = await pool.query(
+    "SELECT * FROM users WHERE email=?",
+    [email]
+  );
+  if (!rows.length) return res.status(401).json({ error: "Invalid credentials" });
 
-  try {
-    const [rows] = await pool.query(
-      "SELECT * FROM users WHERE email=?",
-      [email]
-    );
+  const user = rows[0];
+  const ok = await bcrypt.compare(password, user.password_hash);
 
-    if (!rows.length)
-      return res.status(401).json({ error: "Invalid credentials" });
+  if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-    const user = rows[0];
-
-    const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok)
-      return res.status(401).json({ error: "Invalid credentials" });
-
-    const token = signToken({ id: user.id, email: user.email });
-
-    res.json({ token, user: { id: user.id, email: user.email } });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const token = signToken({ id: user.id, email: user.email });
+  res.json({ token, user: { id: user.id, email: user.email } });
 });
 
 /* ======================================
@@ -186,7 +173,7 @@ app.post("/auth/login", async (req, res) => {
 ====================================== */
 
 function validateItem({ name, quantity, category, expiry_date }) {
-  if (!name || !name.trim()) return "Name required";
+  if (!name.trim()) return "Name required";
   if (!Number(quantity) || Number(quantity) <= 0)
     return "Quantity must be positive";
 
@@ -198,51 +185,48 @@ function validateItem({ name, quantity, category, expiry_date }) {
 
 function fixDate(dateStr) {
   const d = new Date(dateStr);
-  d.setDate(d.getDate() + 1); // fix timezone (-1 day problem)
+  d.setDate(d.getDate() + 1);
   return d.toISOString().slice(0, 10);
 }
 
 function computeStatus(expiry_date) {
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   const exp = new Date(expiry_date);
   if (exp < today) return "expired";
 
-  const diff = Math.ceil((exp - today) / (1000*60*60*24));
+  const diff = Math.ceil((exp - today) / 86400000);
   return diff <= 3 ? "near_expiry" : "available";
 }
 
 /* ======================================
    INVENTORY: GET ALL
 ====================================== */
+
 app.get("/inventory", authRequired, async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      "SELECT * FROM inventory WHERE user_id=? ORDER BY expiry_date ASC",
-      [req.user.id]
-    );
+  const [rows] = await pool.query(
+    "SELECT * FROM inventory WHERE user_id=? ORDER BY expiry_date ASC",
+    [req.user.id]
+  );
 
-    const result = rows.map(r => ({
-      ...r,
-      status: r.status === "donated" ? "donated" : computeStatus(r.expiry_date)
-    }));
+  const result = rows.map(r => ({
+    ...r,
+    status: r.status === "donated" ? "donated" : computeStatus(r.expiry_date)
+  }));
 
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json(result);
 });
 
 /* ======================================
-   INVENTORY: ADD ITEM
+   INVENTORY: ADD ITEM (with notification)
 ====================================== */
+
 app.post("/inventory", authRequired, async (req, res) => {
   const err = validateItem(req.body);
   if (err) return res.status(400).json({ error: err });
 
   const { name, quantity, category, expiry_date } = req.body;
-
   const finalDate = fixDate(expiry_date);
 
   try {
@@ -250,6 +234,13 @@ app.post("/inventory", authRequired, async (req, res) => {
       `INSERT INTO inventory (name, quantity, category, expiry_date, user_id)
        VALUES (?,?,?,?,?)`,
       [name.trim(), quantity, category, finalDate, req.user.id]
+    );
+
+    /* --- Create notification --- */
+    await createNotification(
+      req.user.id,
+      "New Item Added",
+      `You added "${name}" (${quantity})`
     );
 
     res.json({
@@ -266,112 +257,123 @@ app.post("/inventory", authRequired, async (req, res) => {
 });
 
 /* ======================================
-   INVENTORY: EDIT ITEM
+   EDIT ITEM
 ====================================== */
+
 app.put("/inventory/:id", authRequired, async (req, res) => {
   const err = validateItem(req.body);
   if (err) return res.status(400).json({ error: err });
 
   const { name, quantity, category, expiry_date } = req.body;
-
   const finalDate = fixDate(expiry_date);
 
-  try {
-    await pool.query(
-      `UPDATE inventory
-       SET name=?, quantity=?, category=?, expiry_date=?
-       WHERE id=? AND user_id=?`,
-      [name.trim(), quantity, category, finalDate, req.params.id, req.user.id]
-    );
+  await pool.query(
+    `UPDATE inventory SET name=?, quantity=?, category=?, expiry_date=?
+     WHERE id=? AND user_id=?`,
+    [name.trim(), quantity, category, finalDate, req.params.id, req.user.id]
+  );
 
-    const [rows] = await pool.query(
-      "SELECT * FROM inventory WHERE id=?",
-      [req.params.id]
-    );
+  const [rows] = await pool.query("SELECT * FROM inventory WHERE id=?", [
+    req.params.id
+  ]);
 
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json(rows[0]);
 });
 
 /* ======================================
-   INVENTORY: DELETE ITEM
+   DELETE ITEM
 ====================================== */
+
 app.delete("/inventory/:id", authRequired, async (req, res) => {
-  try {
-    await pool.query(
-      "DELETE FROM inventory WHERE id=? AND user_id=?",
-      [req.params.id, req.user.id]
-    );
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  await pool.query(
+    "DELETE FROM inventory WHERE id=? AND user_id=?",
+    [req.params.id, req.user.id]
+  );
+
+  await createNotification(
+    req.user.id,
+    "Item Deleted",
+    `You deleted an item from your inventory`
+  );
+
+  res.json({ message: "Deleted successfully" });
 });
 
 /* ======================================
-   DONATE ITEM
+   DONATE
 ====================================== */
+
 app.post("/inventory/:id/donate", authRequired, async (req, res) => {
-  try {
-    await pool.query(
-      "UPDATE inventory SET status='donated' WHERE id=? AND user_id=?",
-      [req.params.id, req.user.id]
-    );
+  await pool.query(
+    "UPDATE inventory SET status='donated' WHERE id=? AND user_id=?",
+    [req.params.id, req.user.id]
+  );
 
-    const [rows] = await pool.query(
-      "SELECT * FROM inventory WHERE id=?",
-      [req.params.id]
-    );
+  await createNotification(
+    req.user.id,
+    "Item Donated",
+    `You donated an inventory item`
+  );
 
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const [rows] = await pool.query("SELECT * FROM inventory WHERE id=?", [
+    req.params.id
+  ]);
+
+  res.json(rows[0]);
 });
 
 /* ======================================
    REPORT SUMMARY
 ====================================== */
+
 app.get("/report", authRequired, async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      "SELECT * FROM inventory WHERE user_id=?",
-      [req.user.id]
-    );
+  const [rows] = await pool.query(
+    "SELECT * FROM inventory WHERE user_id=?",
+    [req.user.id]
+  );
 
-    const report = {
-      Pantry: 0,
-      Refrigerated: 0,
-      Frozen: 0,
-      Donated: 0,
-      Expired: 0,
-      NearExpiry: 0,
-      Available: 0
-    };
+  const report = {
+    Pantry: 0,
+    Refrigerated: 0,
+    Frozen: 0,
+    Donated: 0,
+    Expired: 0,
+    NearExpiry: 0,
+    Available: 0
+  };
 
-    for (const r of rows) {
-      if (report[r.category] !== undefined) report[r.category]++;
+  for (const r of rows) {
+    if (report[r.category] !== undefined) report[r.category]++;
 
-      if (r.status === "donated") report.Donated++;
-      else {
-        const s = computeStatus(r.expiry_date);
-        if (s === "expired") report.Expired++;
-        else if (s === "near_expiry") report.NearExpiry++;
-        else report.Available++;
-      }
+    if (r.status === "donated") report.Donated++;
+    else {
+      const s = computeStatus(r.expiry_date);
+      if (s === "expired") report.Expired++;
+      else if (s === "near_expiry") report.NearExpiry++;
+      else report.Available++;
     }
-
-    res.json(report);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
+
+  res.json(report);
 });
 
 /* ======================================
-   START SERVER
+   NOTIFICATIONS API
 ====================================== */
+
+app.get("/notifications", authRequired, async (req, res) => {
+  const [rows] = await pool.query(
+    `SELECT * FROM notifications WHERE user_id=? ORDER BY created_at DESC`,
+    [req.user.id]
+  );
+
+  res.json(rows);
+});
+
+/* ======================================
+   SERVER START
+====================================== */
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`EcoBite backend running → http://localhost:${PORT}`)
