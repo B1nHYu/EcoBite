@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Notifications</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    /* ======================================================================================
+       THEME (Light / Dark)
+    ====================================================================================== */
+    :root {
+      --bg-light:#f6f7fb;
+      --bg-dark:#111827;
+      --card-light:#fff;
+      --card-dark:#1f2937;
+      --border-light:#e5e7eb;
+      --border-dark:#374151;
+      --text-light:#111827;
+      --text-dark:#f3f4f6;
+      --muted-light:#6b7280;
+      --muted-dark:#9ca3af;
+
+      --primary:#2563eb;
+      --warn:#d97706;
+      --danger:#ef4444;
+      --ok:#10b981;
+    }
+
+    [data-theme="light"] {
+      --bg:var(--bg-light);
+      --card:var(--card-light);
+      --border:var(--border-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+    }
+    [data-theme="dark"] {
+      --bg:var(--bg-dark);
+      --card:var(--card-dark);
+      --border:var(--border-dark);
+      --text:var(--text-dark);
+      --muted:var(--muted-dark);
+    }
+
+    /* Global */
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg); color:var(--text);
+      transition: background .25s, color .25s;
+    }
+
+    /* ======================================================================================
+       HEADER
+    ====================================================================================== */
+    header{
+      background:url("https://images.unsplash.com/photo-1505575967455-40e256f73376?q=80&w=2000&auto=format") center/cover;
+      position:relative; padding:56px 20px; color:#fff;
+    }
+    header::after{
+      content:""; position:absolute; inset:0; background:rgba(0,0,0,.45);
+    }
+    .hero{
+      position:relative; z-index:2;
+      max-width:1000px; margin:0 auto;
+      display:flex; justify-content:space-between; align-items:flex-end;
+    }
+    .hero h1{ margin:0; font-size:36px; font-weight:900; }
+    .hero-actions{ display:flex; gap:10px; }
+    .btn{
+      padding:10px 14px; border-radius:10px; border:none;
+      font-weight:600; cursor:pointer; transition:.2s;
+    }
+    .btn.light{ background:#fff; color:#111; }
+    .btn.ghost{ background:transparent; border:2px solid #fff; color:#fff; }
+    .btn:hover{ opacity:.85; }
+
+    /* ======================================================================================
+       LAYOUT
+    ====================================================================================== */
+    main{
+      max-width:1000px; margin:20px auto; padding:0 16px;
+      display:grid; gap:20px;
+    }
+    .card{
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:18px;
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+      transition:.25s;
+    }
+    .card:hover{ transform:translateY(-2px); }
+
+    .section-title{
+      display:flex; justify-content:space-between;
+      align-items:center; margin-bottom:8px;
+    }
+
+    h3{ margin:0; font-size:18px; }
+    .muted{ color:var(--muted); }
+
+    /* ======================================================================================
+       SUMMARY BAR
+    ====================================================================================== */
+    .summary{
+      display:flex; gap:16px; flex-wrap:wrap;
+    }
+    .sum-card{
+      flex:1; min-width:140px;
+      background:var(--card); border:1px solid var(--border);
+      padding:14px; border-radius:12px; text-align:center;
+      transition:.2s; font-weight:700;
+    }
+    .sum-card:hover{ transform:translateY(-3px); }
+
+    /* ======================================================================================
+       NOTIFICATION ITEMS
+    ====================================================================================== */
+    .list{ display:grid; gap:10px; }
+
+    .item{
+      background:var(--card); border:1px solid var(--border);
+      padding:14px 16px; border-radius:14px;
+      display:flex; justify-content:space-between;
+      align-items:center; gap:10px;
+      transition:.25s; opacity:1;
+    }
+    .item.unread{
+      animation:pulse 1.8s infinite;
+      border-color:var(--primary);
+    }
+
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(37,99,235,.45); }
+      100%{ box-shadow:0 0 0 14px rgba(37,99,235,0); }
+    }
+
+    .left{ display:flex; gap:14px; align-items:center; }
+    .dot{ width:12px; height:12px; border-radius:50%; }
+    .dot.warn{ background:var(--warn); }
+    .dot.danger{
+      background:var(--danger); animation:blink 1s infinite;
+    }
+    .dot.ok{ background:var(--ok); }
+
+    @keyframes blink{
+      0%{ opacity:1; }
+      50%{ opacity:0.3; }
+      100%{ opacity:1; }
+    }
+
+    .actions{ display:flex; gap:6px; }
+    .btn.small{ padding:6px 10px; border-radius:8px; font-size:13px; }
+    .btn.secondary{ background:var(--border); color:var(--text); }
+    .btn.primary{ background:var(--primary); color:#fff; }
+
+    .badge{
+      padding:3px 8px; border-radius:999px; font-size:12px;
+      font-weight:800;
+    }
+    .b-warn{ background:#fff1dc; color:#9a5b08; }
+    .b-danger{ background:#fee2e2; color:#991b1b; }
+    .b-ok{ background:#e8fff6; color:#065f46; }
+
+    .empty{
+      text-align:center; padding:20px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Notifications</h1>
+        <div class="muted">Smart expiry alerts and weekly meal suggestions.</div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn light" onclick="goHome()">← Home</button>
+        <button class="btn light" onclick="goInventory()">Inventory</button>
+        <button class="btn light" onclick="goPlanner()">Planner</button>
+        <button class="btn ghost" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN BODY -->
+  <main>
+    <!-- SUMMARY -->
+    <section class="summary">
+      <div class="sum-card" id="sum-near">Near Expiry: 0</div>
+      <div class="sum-card" id="sum-expired">Expired: 0</div>
+      <div class="sum-card" id="sum-donated">Donated: 0</div>
+      <div class="sum-card" id="sum-total">Total Items: 0</div>
+    </section>
+
+    <!-- PREFERENCES -->
+    <section class="card">
+      <div class="section-title">
+        <h3>Preferences</h3>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+        <label>
+          <input type="checkbox" id="prefDaily"> Daily reminder
+        </label>
+        <label>
+          <input type="checkbox" id="prefNearOnly"> Only near-expiry
+        </label>
+
+        <button class="btn secondary small" onclick="markAllRead()">Mark all read</button>
+        <span id="countUnread" class="badge b-danger">0 unread</span>
+
+        <button class="btn small primary" onclick="toggleTheme()">Toggle Theme</button>
+      </div>
+    </section>
+
+    <!-- SYSTEM NOTIFICATIONS -->
+    <section class="card">
+      <div class="section-title">
+        <h3>System Notifications</h3>
+        <span id="sysCount" class="badge b-ok">0</span>
+      </div>
+
+      <div class="list" id="sysList">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+
+    <!-- NEAR EXPIRY -->
+    <section class="card">
+      <div class="section-title">
+        <h3>Near-expiry (≤ 3 days) <span class="badge b-warn" id="cNear">0</span></h3>
+        <button class="btn small secondary" onclick="markSectionRead('near')">Mark section read</button>
+      </div>
+      <div class="list" id="listNear"></div>
+    </section>
+
+    <!-- EXPIRED -->
+    <section class="card">
+      <div class="section-title">
+        <h3>Expired <span class="badge b-danger" id="cExpired">0</span></h3>
+        <button class="btn small secondary" onclick="markSectionRead('expired')">Mark section read</button>
+      </div>
+      <div class="list" id="listExpired"></div>
+    </section>
+
+    <!-- DONATED -->
+    <section class="card">
+      <div class="section-title">
+        <h3>Donated <span class="badge b-ok" id="cDonated">0</span></h3>
+        <button class="btn small secondary" onclick="markSectionRead('donated')">Mark section read</button>
+      </div>
+      <div class="list" id="listDonated"></div>
+    </section>
+
+  </main>
+
+<script>
+/* ======================================================================================
+   AUTH & NAVIGATION
+====================================================================================== */
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+if(!getToken()) location.href="/login.html";
+
+function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
+function goHome(){ location.href="/"; }
+function goInventory(){ location.href="/index.html"; }
+function goPlanner(){ location.href="/planner.html"; }
+
+/* ======================================================================================
+   USER KEY FOR LOCALSTORAGE
+====================================================================================== */
+function getUserKey(){
+  try{
+    const payload = JSON.parse(atob(getToken().split(".")[1]));
+    return payload.email || "user";
+  }catch{ return "user"; }
+}
+const storeKey = k => `ecobite:${getUserKey()}:${k}`;
+
+/* ======================================================================================
+   STATE
+====================================================================================== */
+let ITEMS = [];
+let READ = {};     // unread tracking
+let PREF = { daily:false, nearOnly:false };
+
+/* ======================================================================================
+   LOAD PREFERENCES
+====================================================================================== */
+function loadPrefs(){
+  try{ PREF = JSON.parse(localStorage.getItem(storeKey("notif:prefs"))) || PREF; }catch{}
+  document.getElementById("prefDaily").checked = PREF.daily;
+  document.getElementById("prefNearOnly").checked = PREF.nearOnly;
+}
+function savePrefs(){
+  PREF.daily = document.getElementById("prefDaily").checked;
+  PREF.nearOnly = document.getElementById("prefNearOnly").checked;
+  localStorage.setItem(storeKey("notif:prefs"), JSON.stringify(PREF));
+}
+document.getElementById("prefDaily").addEventListener("change", savePrefs);
+document.getElementById("prefNearOnly").addEventListener("change", savePrefs);
+
+/* ======================================================================================
+   LOAD READ STATUS
+====================================================================================== */
+function loadRead(){
+  try{ READ = JSON.parse(localStorage.getItem(storeKey("notif:read"))) || {}; }catch{}
+}
+function saveRead(){
+  localStorage.setItem(storeKey("notif:read"), JSON.stringify(READ));
+}
+
+/* ======================================================================================
+   NOTIFICATION KEY
+====================================================================================== */
+function itemKey(type,id){ return `${type}:${id}`; }
+
+
+/* ======================================================================================
+   SYSTEM NOTIFICATIONS
+====================================================================================== */
+async function loadSystemNotifications(){
+  const res = await fetch("/notifications", { headers: headersAuth() });
+  if(res.status === 401) return;
+
+  const rows = await res.json();
+  const host = document.getElementById("sysList");
+  host.innerHTML = "";
+  document.getElementById("sysCount").textContent = rows.length;
+
+  if(rows.length === 0){
+    host.innerHTML = `<div class="empty">No system notifications.</div>`;
+    return;
+  }
+
+  for(const n of rows){
+    host.insertAdjacentHTML("beforeend", `
+      <div class="item">
+        <div>
+          <strong>${n.title}</strong><br>
+          <span class="muted">${n.message}</span><br>
+          <span class="muted" style="font-size:12px">
+            ${new Date(n.created_at).toLocaleString()}
+          </span>
+        </div>
+      </div>
+    `);
+  }
+}
+
+
+
+
+
+/* ======================================================================================
+   MAIN REFRESH (Fetch inventory)
+====================================================================================== */
+async function refresh(){
+  const res = await fetch("/inventory",{ headers:headersAuth() });
+  if(res.status===401){ location.href="/login.html"; return; }
+
+  ITEMS = await res.json();
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const near=[], expired=[], donated=[];
+
+  for(const it of ITEMS){
+    const exp = new Date(it.expiry_date);
+    if(it.status==="donated"){
+      donated.push(it);
+    }else if(exp<today){
+      expired.push(it);
+    }else{
+      const diff = Math.ceil((exp-today)/86400000);
+      if(diff<=3) near.push(it);
+    }
+  }
+
+  render("Near",near,"warn");
+  render("Expired",expired,"danger");
+  render("Donated",donated,"ok");
+
+  document.getElementById("cNear").textContent = near.length;
+  document.getElementById("cExpired").textContent = expired.length;
+  document.getElementById("cDonated").textContent = donated.length;
+
+  document.getElementById("sum-near").textContent = `Near Expiry: ${near.length}`;
+  document.getElementById("sum-expired").textContent = `Expired: ${expired.length}`;
+  document.getElementById("sum-donated").textContent = `Donated: ${donated.length}`;
+  document.getElementById("sum-total").textContent = `Total Items: ${ITEMS.length}`;
+
+  updateUnreadCount();
+  loadSystemNotifications();
+
+}
+
+/* ======================================================================================
+   RENDER ONE SECTION
+====================================================================================== */
+function render(type,arr,dot){
+  const idMap={ Near:"listNear", Expired:"listExpired", Donated:"listDonated" };
+  const host=document.getElementById(idMap[type]);
+  host.innerHTML="";
+
+  if(!arr.length){
+    host.innerHTML=`<div class="empty">No ${type.toLowerCase()} items.</div>`;
+    return;
+  }
+
+  for(const it of arr){
+    const key=itemKey(type.toLowerCase(),it.id);
+    const unread=!READ[key];
+
+    // days left
+    const today=new Date(); today.setHours(0,0,0,0);
+    const exp=new Date(it.expiry_date);
+    const diff=Math.ceil((exp-today)/86400000);
+    const left = diff<0 ? `${Math.abs(diff)} days overdue` : `${diff} days left`;
+
+    const html = `
+      <div class="item ${unread?"unread":""}">
+        <div class="left">
+          <span class="dot ${dot}"></span>
+          <div>
+            <strong>${it.name}</strong><br>
+            <span class="muted">${it.category} • ${it.expiry_date.slice(0,10)} • ${left}</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn small secondary" onclick="markRead('${key}')">
+            ${unread?"Mark Read":"Unread"}
+          </button>
+
+          <button class="btn small primary" onclick="addToPlanner('${it.name}')">
+            Add to Planner
+          </button>
+        </div>
+      </div>`;
+    host.insertAdjacentHTML("beforeend", html);
+  }
+}
+
+/* ======================================================================================
+   MARK READ / UNREAD
+====================================================================================== */
+function markRead(k){
+  READ[k] = !READ[k];
+  saveRead();
+  refresh();
+}
+function markSectionRead(sec){
+  for(const it of ITEMS){
+    const key=itemKey(sec,it.id);
+    READ[key]=true;
+  }
+  saveRead(); refresh();
+}
+function markAllRead(){
+  for(const it of ITEMS){
+    ["near","expired","donated"].forEach(t => READ[itemKey(t,it.id)] = true);
+  }
+  saveRead(); refresh();
+}
+
+/* ======================================================================================
+   UNREAD COUNT
+====================================================================================== */
+function updateUnreadCount(){
+  const today=new Date(); today.setHours(0,0,0,0);
+  let count=0;
+
+  for(const it of ITEMS){
+    const exp=new Date(it.expiry_date);
+    let type=null;
+
+    if(it.status==="donated") type="donated";
+    else if(exp<today) type="expired";
+    else if(Math.ceil((exp-today)/86400000)<=3) type="near";
+
+    if(type && !READ[itemKey(type,it.id)]) count++;
+  }
+  document.getElementById("countUnread").textContent=`${count} unread`;
+}
+
+/* ======================================================================================
+   ADD TO MEAL PLANNER
+====================================================================================== */
+function addToPlanner(name){
+  alert(`Added "${name}" to planner!  
+(For demo, direct integration requires storing to localStorage and reloading planner.)`);
+
+  const today = new Date();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((today.getDay()+6)%7));
+
+  const dateKey = monday.toISOString().slice(0,10);
+  const key = `ecobite:${getUserKey()}:planner:${dateKey}`;
+
+  let plan = JSON.parse(localStorage.getItem(key) || "{}");
+  plan[dateKey] = plan[dateKey] || { breakfast:[], lunch:[], dinner:[] };
+
+  plan[dateKey].breakfast.push({ name:name });
+
+  localStorage.setItem(key, JSON.stringify(plan));
+}
+
+/* ======================================================================================
+   THEME TOGGLE
+====================================================================================== */
+function toggleTheme(){
+  const body=document.documentElement;
+  const current=body.getAttribute("data-theme");
+  body.setAttribute("data-theme", current==="light"?"dark":"light");
+}
+
+/* ======================================================================================
+   INIT
+====================================================================================== */
+loadPrefs();
+loadRead();
+refresh();
+</script>
+
+</body>
+</html>

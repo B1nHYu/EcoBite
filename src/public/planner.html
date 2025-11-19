@@ -12,6 +12,7 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
 
+<<<<<<< HEAD
     header{
       background:url("https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1600&auto=format&fit=crop") center/cover no-repeat;
       position:relative;padding:56px 20px;color:#fff
@@ -21,11 +22,17 @@
       position:relative;z-index:1;max-width:1100px;margin:0 auto;
       display:flex;align-items:flex-end;justify-content:space-between;gap:16px
     }
+=======
+    header{background:url("https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1600&auto=format&fit=crop") center/cover no-repeat;position:relative;padding:56px 20px;color:#fff}
+    header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+    .hero{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .hero h1{margin:0;font-size:34px;font-weight:900}
     .btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
     .btn.light{background:#fff;color:#111}
     .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
 
+<<<<<<< HEAD
     main{
       max-width:1100px;margin:20px auto;padding:0 16px;
       display:grid;grid-template-columns:280px 1fr;gap:16px
@@ -34,29 +41,42 @@
       background:var(--card);border:1px solid var(--border);border-radius:16px;
       padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)
     }
+=======
+    main{max-width:1100px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:280px 1fr;gap:16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .muted{color:var(--muted)}
 
     /* sidebar */
     .sidebar h3{margin:0 0 10px}
     .inv-list{display:grid;gap:8px;max-height:60vh;overflow:auto}
+<<<<<<< HEAD
     .chip{
       border:1px solid var(--border);border-radius:999px;padding:6px 10px;
       background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px
     }
+=======
+    .chip{border:1px solid var(--border);border-radius:999px;padding:6px 10px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .chip small{color:var(--muted)}
     .chip[draggable="true"]{cursor:grab}
 
     /* planner grid */
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+<<<<<<< HEAD
     input[type="date"]{
       padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff
     }
+=======
+    input[type="date"]{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .btn.primary{background:var(--primary);color:#fff}
     .btn.secondary{background:#e5e7eb;color:#111}
 
     .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
     .col{display:grid;grid-template-rows:auto 1fr;gap:8px}
     .col h4{margin:0;font-size:14px;color:#374151}
+<<<<<<< HEAD
     .cell{
       border:1px dashed #cbd5e1;border-radius:12px;padding:10px;
       min-height:120px;background:#fff
@@ -88,6 +108,16 @@
       main{grid-template-columns:1fr}
       .grid{grid-template-columns:repeat(2,1fr)}
     }
+=======
+    .cell{border:1px dashed #cbd5e1;border-radius:12px;padding:10px;min-height:120px;background:#fff}
+    .slot{border:1px solid #e5e7eb;border-radius:10px;padding:6px 8px;margin:6px 0;background:#f8fafc;display:flex;justify-content:space-between;align-items:center}
+    .slot .del{background:#fee2e2;color:#991b1b;border:none;border-radius:6px;padding:4px 6px;cursor:pointer}
+    .empty{color:#9ca3af;font-size:12px}
+
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:800;font-size:12px}
+    @media(max-width: 980px){ main{grid-template-columns:1fr} .grid{grid-template-columns:repeat(2,1fr)} }
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   </style>
 </head>
 <body>
@@ -106,7 +136,11 @@
   </header>
 
   <main>
+<<<<<<< HEAD
     <!-- 左侧：可拖拽库存 -->
+=======
+    <!-- Left side: Inventory can be dragged -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     <section class="card sidebar">
       <div class="toolbar">
         <input id="week" type="date" />
@@ -117,12 +151,19 @@
       </div>
       <h3>Inventory</h3>
       <div class="inv-list" id="invList"></div>
+<<<<<<< HEAD
       <div class="muted" style="margin-top:8px">
         * Ingredients that are near or past their expiration date will be highlighted. Try to use them first.
       </div>
     </section>
 
     <!-- 右侧：7×3 周计划 -->
+=======
+      <div class="muted" style="margin-top:8px">* Ingredients that are near or past their expiration date will be highlighted, and it is recommended to use them first.。</div>
+    </section>
+
+    <!-- Right side: Weekly Plan 7 × 3 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     <section class="card">
       <div class="footer">
         <div>Week of <span class="badge" id="weekText"></span></div>
@@ -133,6 +174,7 @@
   </main>
 
 <script>
+<<<<<<< HEAD
 /* ========== Auth & Navigation ========== */
 function getToken(){ return localStorage.getItem("token") || ""; }
 function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
@@ -171,11 +213,37 @@ function startOfWeek(d){ // 周一为一周开始
   const day = (dt.getDay()+6) % 7; // Mon=0
   dt.setDate(dt.getDate() - day);
   dt.setHours(0,0,0,0);
+=======
+/* ===== auth & nav ===== */
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+if (!getToken()) location.href="/login.html";
+function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
+function goHome(){ location.href="/"; }
+function goInventory(){ location.href="/index.html"; }
+
+/* ===== state ===== */
+let INVENTORY = [];
+let PLAN = {}; // { 'YYYY-MM-DD': { breakfast:[], lunch:[], dinner:[] } }
+const MEALS = ["breakfast","lunch","dinner"];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+function userKey(){
+  try{ const p = JSON.parse(atob(getToken().split(".")[1])); return p.email || "user"; }catch{ return "user"; }
+}
+function storeKey(date){ return `ecobite:${userKey()}:planner:${date}`; } // date is Monday
+
+/* ===== utils ===== */
+function startOfWeek(d){ // Monday is the start of the week
+  const dt = new Date(d); const day = (dt.getDay()+6)%7; // Mon=0
+  dt.setDate(dt.getDate()-day); dt.setHours(0,0,0,0);
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   return dt;
 }
 function addDays(d, n){ const dt = new Date(d); dt.setDate(dt.getDate()+n); return dt; }
 function fmt(d){ return new Date(d).toISOString().slice(0,10); }
 
+<<<<<<< HEAD
 /* ========== Plan Load / Save ========== */
 function loadPlanForCurrentWeek(){
   const key = storeKey(CURRENT_WEEK);
@@ -225,10 +293,31 @@ function renderInventory(){
       it.status === "expired"     ? "border:2px solid #ef4444" :
       it.status === "near_expiry"? "border:2px solid #d97706" : "";
 
+=======
+/* ===== load ===== */
+async function refresh(){
+  const res = await fetch("/inventory", { headers: headersAuth() });
+  if (res.status === 401) { location.href="/login.html"; return; }
+  INVENTORY = await res.json();
+  renderInventory();
+  renderGrid();
+}
+
+function renderInventory(){
+  const host = document.getElementById("invList");
+  host.innerHTML = "";
+  const today = new Date(); today.setHours(0,0,0,0);
+  for(const it of INVENTORY){
+    const exp = new Date(it.expiry_date);
+    const diff = Math.ceil((exp - today)/86400000);
+    const highlight = it.status==="expired" ? "border:2px solid #ef4444" :
+                      it.status==="near_expiry" ? "border:2px solid #d97706" : "";
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     const chip = document.createElement("div");
     chip.className = "chip";
     chip.draggable = true;
     chip.style = highlight;
+<<<<<<< HEAD
 
     chip.dataset.payload = JSON.stringify({
       id:  it.id,
@@ -243,11 +332,16 @@ function renderInventory(){
       <small>${it.category} • exp ${fmt(exp)}</small>
     `;
 
+=======
+    chip.dataset.payload = JSON.stringify({ id: it.id, name: it.name, qty: it.quantity, cat: it.category, exp: fmt(exp) });
+    chip.innerHTML = `<span>${it.name} <small>×${it.quantity}</small></span><small>${it.category} • exp ${fmt(exp)}</small>`;
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     chip.addEventListener("dragstart", onDragStart);
     host.appendChild(chip);
   }
 }
 
+<<<<<<< HEAD
 /* ========== Grid Render ========== */
 function renderGrid(){
   const host = document.getElementById("grid");
@@ -266,6 +360,21 @@ function renderGrid(){
     const day = addDays(monday, i);
     const dateKey = fmt(day);
 
+=======
+function renderGrid(){
+  const host = document.getElementById("grid"); host.innerHTML="";
+  const weekStr = document.getElementById("week").value || fmt(startOfWeek(new Date()));
+  const wk = startOfWeek(weekStr);
+  document.getElementById("weekText").textContent = fmt(wk);
+
+  // Load this week's schedule
+  const saved = localStorage.getItem(storeKey(fmt(wk)));
+  PLAN = saved ? JSON.parse(saved) : {};
+
+  for (let i=0;i<7;i++){
+    const day = addDays(wk, i);
+    const dateKey = fmt(day);
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     const col = document.createElement("div");
     col.className = "col";
     col.innerHTML = `<h4>${DAYS[i]} <span class="muted">${dateKey}</span></h4>`;
@@ -273,16 +382,26 @@ function renderGrid(){
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.dataset.date = dateKey;
+<<<<<<< HEAD
     cell.addEventListener("dragover", e => e.preventDefault());
     cell.addEventListener("drop", onDropCell);
 
     MEALS.forEach(meal => {
       const list = PLAN[dateKey]?.[meal] || [];
 
+=======
+    cell.addEventListener("dragover", (e)=>e.preventDefault());
+    cell.addEventListener("drop", onDropCell);
+
+    // Three meals
+    MEALS.forEach(meal=>{
+      const list = (PLAN[dateKey]?.[meal]) || [];
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
       const section = document.createElement("div");
       section.className = "slot";
       section.dataset.date = dateKey;
       section.dataset.meal = meal;
+<<<<<<< HEAD
       section.addEventListener("dragover", e => e.preventDefault());
       section.addEventListener("drop", onDropSlot);
 
@@ -313,6 +432,12 @@ function renderGrid(){
 
       section.appendChild(header);
       section.appendChild(content);
+=======
+      section.addEventListener("dragover", (e)=>e.preventDefault());
+      section.addEventListener("drop", onDropSlot);
+      section.innerHTML = `<div style="font-weight:700;text-transform:capitalize">${meal}</div>
+        <div class="muted">${list.length? list.map(x=>x.name).join(", ") : "<span class='empty'>drop items here</span>"}</div>`;
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
       cell.appendChild(section);
     });
 
@@ -321,6 +446,7 @@ function renderGrid(){
   }
 }
 
+<<<<<<< HEAD
 /* ========== Drag & Drop ========== */
 function onDragStart(e){
   e.dataTransfer.setData("text/plain", e.target.dataset.payload);
@@ -456,6 +582,59 @@ document.getElementById("week").addEventListener("change", onWeekInputChange);
   renderGrid();
   refreshInventory();
 })();
+=======
+/* ===== drag & drop ===== */
+function onDragStart(e){ e.dataTransfer.setData("text/plain", e.target.dataset.payload); }
+
+function onDropCell(e){
+  e.preventDefault();
+  const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+  // If dragged to a full grid, it will be placed by default lunch
+  placeTo(e.currentTarget.dataset.date, "lunch", data);
+}
+function onDropSlot(e){
+  e.preventDefault();
+  const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+  placeTo(e.currentTarget.dataset.date, e.currentTarget.dataset.meal, data);
+}
+
+function placeTo(dateKey, meal, item){
+  PLAN[dateKey] = PLAN[dateKey] || { breakfast:[], lunch:[], dinner:[] };
+  PLAN[dateKey][meal].push({ id:item.id, name:item.name, exp:item.exp, cat:item.cat });
+  renderGrid();
+}
+
+/* ===== actions ===== */
+function thisWeek(){
+  const monday = startOfWeek(new Date());
+  document.getElementById("week").value = fmt(monday);
+  renderGrid();
+}
+function savePlan(){
+  const wk = fmt(startOfWeek(document.getElementById("week").value || new Date()));
+  localStorage.setItem(storeKey(wk), JSON.stringify(PLAN));
+  alert("Saved ✓");
+}
+function clearPlan(){
+  if(!confirm("Clear current week plan?")) return;
+  const wk = fmt(startOfWeek(document.getElementById("week").value || new Date()));
+  PLAN = {};
+  localStorage.removeItem(storeKey(wk));
+  renderGrid();
+}
+function exportJSON(){
+  const wk = fmt(startOfWeek(document.getElementById("week").value || new Date()));
+  const blob = new Blob([JSON.stringify({ week:wk, plan:PLAN }, null, 2)], { type:"application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `meal-plan-${wk}.json`;
+  a.click();
+}
+
+/* ===== init ===== */
+document.getElementById("week").value = fmt(startOfWeek(new Date()));
+refresh();
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 </script>
 </body>
 </html>

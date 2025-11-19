@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Login & Register</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display:flex; align-items:center; justify-content:center;
+      min-height:100vh; margin:0; background:#f6f7fb;
+    }
+    .card {
+      width: 360px; background:#fff; border:1px solid #e5e7eb;
+      border-radius:16px; padding:24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+    h1 { margin:0 0 8px; font-size:22px; }
+    p { margin:0 0 20px; color:#6b7280; }
+
+    input {
+      width:100%; padding:10px 12px; margin:8px 0;
+      border:1px solid #d1d5db; border-radius:10px; font-size:14px;
+    }
+    button {
+      width:100%; padding:10px 12px; margin-top:12px;
+      border:0; border-radius:10px;
+      background:#111827; color:#fff; font-weight:600; cursor:pointer;
+    }
+    button.secondary {
+      background:#e5e7eb; color:#111827;
+    }
+
+    .tabs { display:flex; gap:8px; margin-bottom:8px; }
+    .tabs button {
+      flex:1; padding:8px; background:#f3f4f6;
+      border:1px solid #e5e7eb; color:#111827;
+    }
+    .tabs .active { background:#111827; color:#fff; }
+
+    .msg { color:#b00020; min-height:20px; margin-top:6px; font-size:13px; }
+
+    .row { display:flex; gap:8px; }
+    .row button { flex: 0 0 130px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>EcoBite</h1>
+    <p id="subtitle">Login to continue</p>
+
+    <div class="tabs">
+      <button id="tab-login" class="active" onclick="switchTab('login')">Login</button>
+      <button id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <form id="form">
+      <input id="email" type="email" placeholder="Email" required />
+
+      <!-- 密码 -->
+      <input id="password" type="password" placeholder="Password" required />
+
+      <!-- 验证码（只在注册显示） -->
+      <div id="code-area" style="display:none;">
+        <div class="row">
+          <input id="verificationCode" placeholder="Verification Code" />
+          <button type="button" id="sendCodeBtn" onclick="sendCode()">Send Code</button>
+        </div>
+      </div>
+
+      <button type="submit" id="primary">Login</button>
+      <button class="secondary" type="button" onclick="goHome()">Back to home</button>
+
+      <div id="msg" class="msg"></div>
+    </form>
+  </div>
+
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    let mode = "login";
+    let countdown = 0;
+    let timer = null;
+
+    function switchTab(m){
+      mode = m;
+
+      $("#tab-login").classList.toggle("active", m==="login");
+      $("#tab-register").classList.toggle("active", m==="register");
+
+      $("#primary").textContent = m==="login" ? "Login" : "Create account";
+      $("#subtitle").textContent = m==="login" ? "Login to continue" : "Create your EcoBite account";
+
+      // 切换验证码区域显示
+      $("#code-area").style.display = m === "register" ? "block" : "none";
+
+      $("#msg").textContent = "";
+    }
+
+    function goHome(){
+      if (localStorage.getItem("token")) location.href = "/";
+    }
+
+    // 发送验证码
+    async function sendCode(){
+      const email = $("#email").value.trim();
+      if (!email){
+        $("#msg").textContent = "Please enter email first";
+        return;
+      }
+
+      $("#msg").textContent = "";
+
+      try {
+        const res = await fetch("/auth/send-code", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if(!res.ok){
+          $("#msg").textContent = data.error || "Send failed";
+          return;
+        }
+
+        $("#msg").textContent = "Verification code sent!";
+        startCountdown();
+      } catch(e){
+        $("#msg").textContent = "Network error";
+      }
+    }
+
+    function startCountdown(){
+      countdown = 60;
+      $("#sendCodeBtn").disabled = true;
+      $("#sendCodeBtn").textContent = "Sent (60)";
+
+      timer = setInterval(()=>{
+        countdown--;
+        $("#sendCodeBtn").textContent = `Sent (${countdown})`;
+
+        if(countdown <= 0){
+          clearInterval(timer);
+          $("#sendCodeBtn").disabled = false;
+          $("#sendCodeBtn").textContent = "Send Code";
+        }
+      }, 1000);
+    }
+
+    // Login / Register Form Submit
+    $("#form").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      $("#msg").textContent = "";
+
+      const payload = {
+        email: $("#email").value.trim(),
+        password: $("#password").value
+      };
+
+      if (mode === "register"){
+        payload.verificationCode = $("#verificationCode").value.trim();
+        if(!payload.verificationCode){
+          $("#msg").textContent = "Enter verification code";
+          return;
+        }
+      }
+
+      try{
+        const url = mode==="login" ? "/auth/login" : "/auth/register";
+
+        const res = await fetch(url,{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if(!res.ok){
+          $("#msg").textContent = data.error || "Request failed";
+          return;
+        }
+
+        if(mode==="login"){
+          localStorage.setItem("token", data.token);
+          location.href = "/";
+          return;
+        }
+
+        // Register success → switch to Login
+        switchTab("login");
+        $("#msg").textContent = "Account created! Please login.";
+      }catch(err){
+        $("#msg").textContent = "Network error";
+      }
+    });
+
+    // Auto jump if logged in
+    if(localStorage.getItem("token")){
+      location.href = "/";
+    }
+  </script>
+</body>
+</html>

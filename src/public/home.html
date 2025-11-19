@@ -15,7 +15,11 @@
     a{ color:inherit; text-decoration:none; }
     button{ cursor:pointer; }
 
+<<<<<<< HEAD
     /* Top Navigation */
+=======
+    /* 顶部导航 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     header{ position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--border); }
     .nav{ max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .nav-left,.nav-actions{ display:flex; gap:10px; align-items:center; }
@@ -27,31 +31,50 @@
     .btn.ghost{ background:transparent; color:#111827; border:1px solid var(--border); }
     .btn:focus-visible{ outline:none; box-shadow:var(--ring); }
 
+<<<<<<< HEAD
     /* Homepage Banner */
+=======
+    /* 首页大图 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .hero{ max-width:1100px; margin:24px auto; padding:0 16px; display:grid; gap:20px; grid-template-columns:1.1fr 0.9fr; align-items:center; }
     .hero h1{ margin:0 0 12px; font-size:36px; line-height:1.15; }
     .hero p{ margin:0 0 16px; color:var(--muted); font-size:16px; }
     .hero .cta{ display:flex; gap:10px; flex-wrap:wrap; }
     .hero-img{ width:100%; border-radius:16px; border:1px solid var(--border); box-shadow:0 20px 50px rgba(0,0,0,.07); object-fit:cover; aspect-ratio:4/3; }
 
+<<<<<<< HEAD
     /* Card */
+=======
+    /* 卡片 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .card{ background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px; transition:transform .12s, box-shadow .12s, border-color .12s; }
     .card.click{ cursor:pointer; }
     .card.click:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.07); border-color:#d1d5db; }
     .card h3{ margin:0 0 8px; }
     .muted{ color:var(--muted); }
 
+<<<<<<< HEAD
     /* Functional Area */
     .features{ max-width:1100px; margin:8px auto 24px; padding:0 16px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
 
     /* Gallery */
+=======
+    /* 功能区 */
+    .features{ max-width:1100px; margin:8px auto 24px; padding:0 16px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+
+    /* 图库 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .gallery{ max-width:1100px; margin:0 auto 24px; padding:0 16px; }
     .grid-4{ display:grid; gap:10px; grid-template-columns:repeat(4,1fr); }
     .gallery a{ display:block; border-radius:12px; border:1px solid var(--border); overflow:hidden; }
     .gallery img{ width:100%; height:140px; object-fit:cover; display:block; }
     .gallery a:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(0,0,0,.07); }
 
+<<<<<<< HEAD
     /* The panel displayed after logging in */
+=======
+    /* 登录后显示的面板 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     .dash{ max-width:1100px; margin:24px auto; padding:0 16px; display:none; gap:20px; grid-template-columns:2fr 1fr; }
     .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
     .kpi{ background:#fff; border:1px solid var(--border); border-radius:12px; padding:12px; transition:transform .12s, box-shadow .12s, border-color .12s; cursor:pointer; }
@@ -103,13 +126,21 @@
     </div>
   </header>
 
+<<<<<<< HEAD
   <!-- Homepage main image introduction -->
+=======
+  <!-- 首页大图介绍 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   <section class="hero">
     <div>
       <h1>Cut food waste. Save money. Eat smarter.</h1>
       <p>EcoBite helps you track items, manage expiry dates, visualize data, and prioritize near-expiry usage.</p>
       <div class="cta">
+<<<<<<< HEAD
         <!-- It doesn't display after logging in. -->
+=======
+        <!-- 登陆后就不显示 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
         <button class="btn" id="ctaStart" onclick="goRegister()">Get Started Free</button>
         <button class="btn secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Learn More</button>
       </div>
@@ -117,7 +148,11 @@
     <img class="hero-img" src="/images/hero.jpg" alt="Kitchen and groceries">
   </section>
 
+<<<<<<< HEAD
   <!-- Function Introduction Area -->
+=======
+  <!-- 功能介绍区 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   <section class="features" id="features">
     <a class="card click" href="/notifications.html" aria-label="Open Notifications">
       <h3>Smart Alerts</h3>
@@ -143,7 +178,11 @@
 </section>
 
 
+<<<<<<< HEAD
   <!-- Dashboard available after logging in -->
+=======
+  <!-- 登录后才有的仪表盘 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   <section class="dash" id="dash">
     <div>
       <div class="section-head">
@@ -206,7 +245,11 @@
   <footer>© EcoBite — reduce waste, eat smart.</footer>
 
 <script>
+<<<<<<< HEAD
 /* Some commonly used functions */
+=======
+/* 一些常用的函数 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 const $ = s => document.querySelector(s);
 function to(url){ location.href = url; }
 function getToken(){ return localStorage.getItem("token") || ""; }
@@ -216,17 +259,29 @@ function goLogin(){ location.href="/login.html"; }
 function goRegister(){ location.href="/login.html?tab=register"; }
 function logout(){ localStorage.removeItem("token"); location.reload(); }
 
+<<<<<<< HEAD
 /* Initialize */
 (async function init(){
   const authed = !!getToken();
 
   // Toggle the button based on login status
+=======
+/* 初始化 */
+(async function init(){
+  const authed = !!getToken();
+
+  // 根据是否登录来切换按钮
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   $("#btnLogin").style.display     = authed ? "none" : "";
   $("#btnRegister").style.display  = authed ? "none" : "";
   $("#btnInventory").style.display = authed ? "" : "none";
   $("#btnLogout").style.display    = authed ? "" : "none";
 
+<<<<<<< HEAD
   // The Start button does not appear after logging in
+=======
+  // 登录后就不显示开始按钮
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   const cta = document.getElementById("ctaStart");
   if (cta) cta.style.display = authed ? "none" : "";
 
@@ -236,7 +291,11 @@ function logout(){ localStorage.removeItem("token"); location.reload(); }
   }
 })();
 
+<<<<<<< HEAD
 /*Panel data */
+=======
+/* 面板数据 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 async function loadKPIs(){
   const report = await fetch("/report", { headers: headersAuth() }).then(r=>r.json());
   $("#kpiTotal").textContent   = (report.Pantry||0) + (report.Refrigerated||0) + (report.Frozen||0);
@@ -257,7 +316,11 @@ async function loadKPIs(){
 }
 
 let chart;
+<<<<<<< HEAD
 /* Small chart */
+=======
+/* 小图表 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 async function drawReport(){
   const data = await fetch("/report", { headers: headersAuth() }).then(r=>r.json());
   const ctx = document.getElementById("chart").getContext("2d");
@@ -279,7 +342,11 @@ async function drawReport(){
   });
 }
 
+<<<<<<< HEAD
 /* Quickly add an item */
+=======
+/* 快速加一个物品 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 async function quickAdd(){
   const body = {
     name: $("#itemName").value.trim(),
@@ -301,4 +368,7 @@ async function quickAdd(){
 </script>
 </body>
 </html>
+<<<<<<< HEAD
 
+=======
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
