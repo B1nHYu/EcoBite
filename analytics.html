@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ========================= THEME (Light / Dark) ========================= */
+    :root{
+      --bg-light:#f6f7fb;
+      --bg-dark:#0b1120;
+      --card-light:#ffffff;
+      --card-dark:#111827;
+      --border-light:#e5e7eb;
+      --border-dark:#1f2937;
+      --text-light:#111827;
+      --text-dark:#e5e7eb;
+      --muted-light:#6b7280;
+      --muted-dark:#9ca3af;
+
+      --primary:#2563eb;
+      --primary-soft:#e0ecff;
+      --ok:#10b981;
+      --warn:#d97706;
+      --danger:#ef4444;
+    }
+
+    [data-theme="light"]{
+      --bg:var(--bg-light);
+      --card:var(--card-light);
+      --border:var(--border-light);
+      --text:var(--text-light);
+      --muted:var(--muted-light);
+    }
+    [data-theme="dark"]{
+      --bg:var(--bg-dark);
+      --card:var(--card-dark);
+      --border:var(--border-dark);
+      --text:var(--text-dark);
+      --muted:var(--muted-dark);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      transition:background .25s,color .25s;
+    }
+
+    /* ========================= HEADER ========================= */
+    header{
+      background:url("/images/analytics_hero.jpg") center/cover no-repeat;
+      position:relative;
+      padding:56px 20px;
+      color:#fff;
+    }
+    header::after{
+      content:"";position:absolute;inset:0;
+      background:rgba(0,0,0,.45);
+    }
+    .hero{
+      position:relative;z-index:1;
+      max-width:1100px;margin:0 auto;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    }
+    .hero h1{margin:0;font-size:34px;font-weight:900}
+    .hero p{margin:6px 0 0;opacity:.95}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{
+      padding:10px 14px;border:none;border-radius:10px;
+      font-weight:700;cursor:pointer;transition:.2s;
+    }
+    .btn.light{background:#fff;color:#111}
+    .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
+    .btn:hover{opacity:.85}
+
+    /* ========================= LAYOUT ========================= */
+    main{
+      max-width:1100px;margin:20px auto;padding:0 16px;
+      display:grid;gap:16px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 6px 24px rgba(0,0,0,.06);
+      transition:.2s;
+    }
+    .card:hover{transform:translateY(-1px);}
+    .muted{color:var(--muted);}
+
+    /* KPI summary row */
+    .kpi-row{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+    .kpi{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .kpi-label{font-size:13px;color:var(--muted);}
+    .kpi-value{font-size:20px;font-weight:800;}
+    .kpi-trend{font-size:12px;}
+    .up{color:var(--ok);}
+    .down{color:var(--danger);}
+
+    /* toolbar */
+    .toolbar{
+      display:grid;
+      grid-template-columns:auto 1fr 1fr auto auto auto auto auto;
+      gap:8px;
+      align-items:center;
+    }
+    .tag{
+      padding:6px 10px;
+      background:var(--primary-soft);
+      color:#1d4ed8;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+    input[type="date"], select{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:13px;
+    }
+
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.secondary{background:#e5e7eb;color:#111}
+    .btn.small{padding:8px 10px;border-radius:8px;font-size:13px;}
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .chart-header{
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;
+    }
+    .chart-title{margin:0;font-size:16px;font-weight:800}
+
+    .empty{
+      text-align:center;
+      padding:20px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* risk list */
+    .risk-list{display:grid;gap:8px;margin-top:6px;}
+    .risk-item{
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:8px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:13px;
+    }
+    .badge{
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+    }
+    .b-warn{background:#fff7ed;color:#9a3412;}
+    .b-danger{background:#fee2e2;color:#b91c1c;}
+    .b-ok{background:#dcfce7;color:#166534;}
+
+    footer{
+      margin:28px 0 18px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    @media (max-width:920px){
+      .grid-2{grid-template-columns:1fr;}
+      .toolbar{grid-template-columns:1fr 1fr 1fr 1fr;}
+      .kpi-row{grid-template-columns:repeat(2,1fr);}
+    }
+    @media (max-width:620px){
+      .toolbar{grid-template-columns:1fr 1fr;}
+      .kpi-row{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Analytics</h1>
+        <p>Understand your inventory, waste and donations with clear trends.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn light" onclick="goHome()">← Home</button>
+        <button class="btn light" onclick="goInventory()">Inventory</button>
+        <button class="btn light" onclick="goPlanner()">Planner</button>
+        <button class="btn ghost" onclick="toggleTheme()">Theme</button>
+        <button class="btn ghost" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- KPI SUMMARY -->
+    <section class="kpi-row">
+      <div class="kpi">
+        <span class="kpi-label">Total Items</span>
+        <span class="kpi-value" id="kpi-total">0</span>
+        <span class="kpi-trend muted" id="kpi-total-note">All items in current filter</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Near Expiry (≤ 3 days)</span>
+        <span class="kpi-value" id="kpi-near">0</span>
+        <span class="kpi-trend up" id="kpi-near-note">Try to plan meals with these.</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Expired + Donated</span>
+        <span class="kpi-value" id="kpi-expdon">0</span>
+        <span class="kpi-trend muted" id="kpi-expdon-note">Items no longer available.</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Waste Rate</span>
+        <span class="kpi-value" id="kpi-waste">0%</span>
+        <span class="kpi-trend down" id="kpi-waste-note">Lower is better.</span>
+      </div>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="card">
+      <div class="toolbar">
+        <span class="tag">Filters</span>
+        <input id="from" type="date" />
+        <input id="to" type="date" />
+        <select id="statusFilter">
+          <option value="all">All statuses</option>
+          <option value="available">Available</option>
+          <option value="near_expiry">Near expiry</option>
+          <option value="expired">Expired</option>
+          <option value="donated">Donated</option>
+        </select>
+        <button class="btn secondary small" onclick="quick(7)">Last 7d</button>
+        <button class="btn secondary small" onclick="quick(30)">Last 30d</button>
+        <button class="btn small" onclick="clearRange()">Clear</button>
+        <button class="btn primary small" onclick="refresh()">Apply</button>
+      </div>
+      <div class="muted" style="margin-top:6px">
+        * Filtering is based on each item's <b>expiry date</b> and <b>status</b>.
+      </div>
+    </section>
+
+    <!-- CHARTS ROW 1 -->
+    <section class="grid-2">
+      <div class="card">
+        <div class="chart-header">
+          <h3 class="chart-title">Category Share (by quantity)</h3>
+          <button class="btn secondary small" onclick="downloadImage(pieChart,'category-share.png')">Download PNG</button>
+        </div>
+        <canvas id="pie" height="170"></canvas>
+        <div id="pie-empty" class="empty" style="display:none;">No data in current filter.</div>
+      </div>
+
+      <div class="card">
+        <div class="chart-header">
+          <h3 class="chart-title">Status Breakdown (by quantity)</h3>
+          <button class="btn secondary small" onclick="downloadImage(barChart,'status-breakdown.png')">Download PNG</button>
+        </div>
+        <canvas id="bar" height="170"></canvas>
+        <div id="bar-empty" class="empty" style="display:none;">No data in current filter.</div>
+      </div>
+    </section>
+
+    <!-- CHARTS ROW 2 + RISK PANEL -->
+    <section class="grid-2">
+      <div class="card">
+        <div class="chart-header">
+          <h3 class="chart-title">Expiry Timeline (by month, quantity)</h3>
+          <button class="btn secondary small" onclick="downloadImage(lineChart,'expiry-timeline.png')">Download PNG</button>
+        </div>
+        <canvas id="line" height="150"></canvas>
+        <div id="line-empty" class="empty" style="display:none;">No data in current filter.</div>
+      </div>
+
+      <div class="card">
+        <div class="chart-header">
+          <h3 class="chart-title">Top Risk Items</h3>
+          <span class="muted" style="font-size:12px;">Soonest expiry or already expired</span>
+        </div>
+        <div id="riskList" class="risk-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© EcoBite Analytics · Inventory & Waste Insights</footer>
+
+<script>
+/* ========================== AUTH & NAV ========================== */
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+if (!getToken()) location.href="/login.html";
+
+function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
+function goHome(){ location.href="/"; }
+function goInventory(){ location.href="/index.html"; }
+function goPlanner(){ location.href="/planner.html"; }
+
+/* Theme toggle */
+function toggleTheme(){
+  const root = document.documentElement;
+  const current = root.getAttribute("data-theme") || "light";
+  root.setAttribute("data-theme", current === "light" ? "dark" : "light");
+}
+
+/* ========================== STATE ========================== */
+let ITEMS = [];
+let FILTERED = [];
+let pieChart, barChart, lineChart;
+
+/* ========================== MAIN REFRESH ========================== */
+async function refresh(){
+  const res = await fetch("/inventory", { headers: headersAuth() });
+  if (res.status === 401) { location.href="/login.html"; return; }
+  ITEMS = await res.json();
+
+  applyFilters();
+  updateKPI();
+  drawAll();
+  renderRisk();
+}
+
+/* ========================== FILTERS ========================== */
+function applyFilters(){
+  const from = document.getElementById("from").value;
+  const to   = document.getElementById("to").value;
+  const status = document.getElementById("statusFilter").value;
+
+  FILTERED = ITEMS.filter(it=>{
+    const d = new Date(it.expiry_date);
+    if (isNaN(d)) return false;
+
+    const okFrom = !from || d >= new Date(from + "T00:00:00");
+    const okTo   = !to   || d <= new Date(to   + "T23:59:59");
+    const okStatus = (status === "all") || (it.status === status);
+
+    return okFrom && okTo && okStatus;
+  });
+}
+
+/* 快捷选择最近 N 天 */
+function quick(days){
+  const now = new Date();
+  const from = new Date(now.getTime() - days*24*60*60*1000);
+  document.getElementById("from").value = from.toISOString().slice(0,10);
+  document.getElementById("to").value   = now.toISOString().slice(0,10);
+  refresh();
+}
+
+/* 清空筛选 */
+function clearRange(){
+  document.getElementById("from").value = "";
+  document.getElementById("to").value   = "";
+  document.getElementById("statusFilter").value = "all";
+  refresh();
+}
+
+/* ========================== KPI SUMMARY ========================== */
+function updateKPI(){
+  const totalItems = FILTERED.length;
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let near = 0, expired = 0, donated = 0;
+  FILTERED.forEach(it=>{
+    const exp = new Date(it.expiry_date);
+    if (it.status === "donated") donated++;
+    else if (exp < today) expired++;
+    else {
+      const diff = Math.ceil((exp - today)/86400000);
+      if (diff <= 3) near++;
+    }
+  });
+
+  const expDon = expired + donated;
+  const wasteRate = totalItems ? ((expDon / totalItems) * 100).toFixed(1) : 0;
+
+  document.getElementById("kpi-total").textContent  = totalItems;
+  document.getElementById("kpi-near").textContent   = near;
+  document.getElementById("kpi-expdon").textContent = expDon;
+  document.getElementById("kpi-waste").textContent  = wasteRate + "%";
+
+  document.getElementById("kpi-near-note").textContent =
+    near > 0 ? "Use these items in your next meal plan." : "Nice! No items close to expiry.";
+  document.getElementById("kpi-expdon-note").textContent =
+    expDon > 0 ? "Try to reduce new waste by planning earlier." : "No expired or donated items yet.";
+  document.getElementById("kpi-waste-note").textContent =
+    wasteRate > 30 ? "High waste — consider reviewing stock levels." :
+    wasteRate > 0  ? "Some waste — see near-expiry items above." :
+                     "Perfect! No waste recorded.";
+}
+
+/* ========================== AGG HELPERS ========================== */
+function aggCategory(){
+  const obj = { Pantry:0, Refrigerated:0, Frozen:0 };
+  FILTERED.forEach(it=>{
+    if (obj[it.category] != null){
+      const qty = Number(it.quantity) || 1;
+      obj[it.category] += qty;
+    }
+  });
+  const labels = Object.keys(obj);
+  const values = labels.map(k => obj[k]);
+  return { labels, values };
+}
+
+function aggStatus(){
+  const keys = ["available","near_expiry","expired","donated"];
+  const labelsDisplay = ["Available","Near Expiry","Expired","Donated"];
+  const map = { available:0, near_expiry:0, expired:0, donated:0 };
+  FILTERED.forEach(it=>{
+    if (map[it.status] != null){
+      const qty = Number(it.quantity) || 1;
+      map[it.status] += qty;
+    }
+  });
+  return {
+    labels: labelsDisplay,
+    values: keys.map(k=>map[k])
+  };
+}
+
+function aggTimeline(){
+  const m = new Map();
+  FILTERED.forEach(it=>{
+    const d = new Date(it.expiry_date);
+    if (isNaN(d)) return;
+    const key = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+    const qty = Number(it.quantity) || 1;
+    m.set(key, (m.get(key)||0) + qty);
+  });
+  const labels = Array.from(m.keys()).sort();
+  const values = labels.map(k => m.get(k));
+  return { labels, values };
+}
+
+/* ========================== DRAW CHARTS ========================== */
+function drawAll(){
+  const pieData = aggCategory();
+  const barData = aggStatus();
+  const lineData = aggTimeline();
+
+  // Category pie
+  const pieCanvas = document.getElementById("pie");
+  const pieEmpty  = document.getElementById("pie-empty");
+  if (pieChart) pieChart.destroy();
+
+  if (pieData.values.every(v=>v===0)){
+    pieCanvas.style.display="none";
+    pieEmpty.style.display="block";
+  }else{
+    pieCanvas.style.display="block";
+    pieEmpty.style.display="none";
+    pieChart = new Chart(pieCanvas.getContext("2d"), {
+      type:"pie",
+      data:{ labels: pieData.labels, datasets:[{ data: pieData.values }] },
+      options:{
+        plugins:{
+          legend:{position:"bottom"},
+          tooltip:{callbacks:{
+            label:(ctx)=>{
+              const total = ctx.dataset.data.reduce((a,b)=>a+b,0) || 1;
+              const val = ctx.parsed;
+              const pct = (val/total*100).toFixed(1);
+              return `${ctx.label}: ${val} (${pct}%)`;
+            }
+          }}
+        }
+      }
+    });
+  }
+
+  // Status bar
+  const barCanvas = document.getElementById("bar");
+  const barEmpty  = document.getElementById("bar-empty");
+  if (barChart) barChart.destroy();
+
+  if (barData.values.every(v=>v===0)){
+    barCanvas.style.display="none";
+    barEmpty.style.display="block";
+  }else{
+    barCanvas.style.display="block";
+    barEmpty.style.display="none";
+    barChart = new Chart(barCanvas.getContext("2d"), {
+      type:"bar",
+      data:{ labels: barData.labels, datasets:[{ label:"Quantity", data: barData.values }] },
+      options:{
+        plugins:{ legend:{display:false} },
+        scales:{
+          y:{ beginAtZero:true, ticks:{precision:0} }
+        }
+      }
+    });
+  }
+
+  // Timeline line
+  const lineCanvas = document.getElementById("line");
+  const lineEmpty  = document.getElementById("line-empty");
+  if (lineChart) lineChart.destroy();
+
+  if (!lineData.labels.length){
+    lineCanvas.style.display="none";
+    lineEmpty.style.display="block";
+  }else{
+    lineCanvas.style.display="block";
+    lineEmpty.style.display="none";
+    lineChart = new Chart(lineCanvas.getContext("2d"), {
+      type:"line",
+      data:{ labels: lineData.labels, datasets:[{ label:"Quantity expiring", data: lineData.values, tension:.3, fill:false }] },
+      options:{
+        plugins:{ legend:{display:false} },
+        scales:{ y:{ beginAtZero:true, ticks:{precision:0} } }
+      }
+    });
+  }
+}
+
+/* ========================== RISK PANEL ========================== */
+function renderRisk(){
+  const host = document.getElementById("riskList");
+  host.innerHTML = "";
+
+  if (!FILTERED.length){
+    host.innerHTML = `<div class="empty">No items to show.</div>`;
+    return;
+  }
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const arr = FILTERED.map(it=>{
+    const exp = new Date(it.expiry_date);
+    const diff = Math.ceil((exp-today)/86400000);
+    return { item:it, diff };
+  });
+
+  // sort: expired first, then nearest future expiry
+  arr.sort((a,b)=>{
+    if (a.diff < 0 && b.diff >= 0) return -1;
+    if (a.diff >=0 && b.diff < 0) return 1;
+    return a.diff - b.diff;
+  });
+
+  const top = arr.slice(0,5);
+  top.forEach(obj=>{
+    const { item, diff } = obj;
+    let badgeClass = "b-ok", text="Plenty of time";
+    if (diff < 0){ badgeClass="b-danger"; text=`Expired ${Math.abs(diff)} day(s) ago`; }
+    else if (diff === 0){ badgeClass="b-danger"; text="Expires today"; }
+    else if (diff <=3){ badgeClass="b-warn"; text=`Expires in ${diff} day(s)`; }
+
+    const html = `
+      <div class="risk-item">
+        <div>
+          <strong>${item.name}</strong>
+          <div class="muted">${item.category} • Qty ${item.quantity} • ${String(item.expiry_date).slice(0,10)}</div>
+        </div>
+        <span class="badge ${badgeClass}">${text}</span>
+      </div>`;
+    host.insertAdjacentHTML("beforeend", html);
+  });
+}
+
+/* ========================== DOWNLOAD PNG ========================== */
+function downloadImage(chart, filename="chart.png"){
+  if (!chart) return;
+  const url = chart.toBase64Image();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+}
+
+/* ========================== INIT ========================== */
+refresh();
+</script>
+</body>
+</html>

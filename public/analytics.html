@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EcoBite • Analytics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+      --primary:#2563eb;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+
+    /*Top Navigation*/
+    header{background: url("/images/analytics_hero.jpg") center/cover no-repeat;
+  position: relative;
+  padding: 56px 20px;
+  color: #fff;}
+    header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+    .hero{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+    .hero h1{margin:0;font-size:34px;font-weight:900}
+    .hero p{margin:6px 0 0;opacity:.95}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.light{background:#fff;color:#111}
+    .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
+
+    main{max-width:1100px;margin:20px auto;padding:0 16px;display:grid;gap:16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+    .muted{color:var(--muted)}
+    .tag{padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700;font-size:12px}
+
+    .toolbar{display:grid;gap:10px;grid-template-columns: auto 1fr 1fr auto auto auto auto}
+    input[type="date"]{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff}
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.secondary{background:#e5e7eb;color:#111}
+    .btn.small{padding:8px 10px;border-radius:8px}
+
+    .grid-2{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+    @media (max-width: 920px){ .grid-2{grid-template-columns:1fr} .toolbar{grid-template-columns:1fr 1fr 1fr 1fr} }
+
+    footer{margin:28px 0 18px;text-align:center;color:var(--muted);font-size:13px}
+
+    .chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .chart-title{margin:0;font-size:16px;font-weight:800}
+  </style>
+</head>
+<body>
+  <!-- Top headline area -->
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Analytics</h1>
+        <p>Understand your inventory with clear charts & trends.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn light" onclick="goHome()">← Home</button>
+        <button class="btn light" onclick="goInventory()">Inventory</button>
+        <button class="btn ghost" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!--Date Filter Area -->
+    <section class="card">
+      <div class="toolbar">
+        <span class="tag" style="align-self:center">Date range</span>
+        <input id="from" type="date" />
+        <input id="to" type="date" />
+        <button class="btn secondary small" onclick="quick(7)">Last 7d</button>
+        <button class="btn secondary small" onclick="quick(30)">Last 30d</button>
+        <button class="btn small" onclick="clearRange()">Clear</button>
+        <button class="btn primary small" onclick="refresh()">Apply</button>
+      </div>
+      <div class="muted" style="margin-top:6px">* Item-based <b>expiry date</b> Perform filtering and statistics</div>
+    </section>
+
+    <!--First row of images: pie chart, bar chart -->
+    <section class="grid-2">
+      <div class="card">
+        <div class="chart-header">
+          <h3 class="chart-title">Category Share</h3>
+          <button class="btn secondary small" onclick="downloadImage(pieChart,'category-pie.png')">Download PNG</button>
+        </div>
+        <canvas id="pie" height="170"></canvas>
+      </div>
+
+      <div class="card">
+        <div class="chart-header">
+          <h3 class="chart-title">Status Breakdown</h3>
+          <button class="btn secondary small" onclick="downloadImage(barChart,'status-bar.png')">Download PNG</button>
+        </div>
+        <canvas id="bar" height="170"></canvas>
+      </div>
+    </section>
+
+    <!-- Second row chart: line chart -->
+    <section class="card">
+      <div class="chart-header">
+        <h3 class="chart-title">Expiry Timeline (by Month)</h3>
+        <button class="btn secondary small" onclick="downloadImage(lineChart,'timeline.png')">Download PNG</button>
+      </div>
+      <canvas id="line" height="120"></canvas>
+    </section>
+  </main>
+
+  <footer>© EcoBite Analytics</footer>
+
+<script>
+/* Login and redirection related */
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+if (!getToken()) location.href="/login.html";
+function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
+function goHome(){ location.href="/"; }
+function goInventory(){ location.href="/index.html"; }  // Go to inventory page
+
+/*data storage*/
+let ITEMS = [];     
+let FILTERED = [];  
+let pieChart, barChart, lineChart;
+
+/* Refresh Data */
+async function refresh(){
+  const res = await fetch("/inventory", { headers: headersAuth() });
+  if (res.status === 401) { location.href="/login.html"; return; }
+  ITEMS = await res.json();
+
+  applyRange();
+  drawAll();
+}
+
+/* Filter Date */
+function applyRange(){
+  const from = document.getElementById("from").value;
+  const to   = document.getElementById("to").value;
+  FILTERED = ITEMS.filter(it=>{
+    const d = new Date(it.expiry_date);
+    const okFrom = !from || d >= new Date(from + "T00:00:00");
+    const okTo   = !to   || d <= new Date(to   + "T23:59:59");
+    return okFrom && okTo;
+  });
+}
+
+/* Quickly select a few days */
+function quick(days){
+  const now = new Date();
+  const from = new Date(now.getTime() - (days*24*60*60*1000));
+  document.getElementById("from").value = from.toISOString().slice(0,10);
+  document.getElementById("to").value   = now.toISOString().slice(0,10);
+  refresh();
+}
+function clearRange(){
+  document.getElementById("from").value = "";
+  document.getElementById("to").value   = "";
+  refresh();
+}
+
+/* Categorical Statistics */
+function aggCategory(){
+  const keys = ["Pantry","Refrigerated","Frozen"];
+  const obj = { Pantry:0, Refrigerated:0, Frozen:0 };
+  for(const it of FILTERED){ if (obj[it.category] != null) obj[it.category]++; }
+  return { labels: keys, values: keys.map(k=>obj[k]) };
+}
+function aggStatus(){
+  const keys = ["available","near_expiry","expired","donated"];
+  const map = { available:0, near_expiry:0, expired:0, donated:0 };
+  for(const it of FILTERED){ if (map[it.status] != null) map[it.status]++; }
+  const labels = ["Available","Near Expiry","Expired","Donated"];
+  return { labels, values: keys.map(k=>map[k]) };
+}
+function aggTimeline(){
+  const m = new Map();
+  for(const it of FILTERED){
+    const d = new Date(it.expiry_date);
+    if (isNaN(d)) continue;
+    const key = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+    m.set(key, (m.get(key)||0)+1);
+  }
+  const keys = Array.from(m.keys()).sort();
+  return { labels: keys, values: keys.map(k=>m.get(k)) };
+}
+
+/* Draw a picture */
+function drawAll(){
+  const pc = aggCategory();
+  if (pieChart) pieChart.destroy();
+  pieChart = new Chart(document.getElementById("pie").getContext("2d"), {
+    type:"pie",
+    data:{ labels: pc.labels, datasets:[{ data: pc.values }] },
+    options:{ plugins:{ legend:{position:"bottom"} } }
+  });
+
+  const sc = aggStatus();
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById("bar").getContext("2d"), {
+    type:"bar",
+    data:{ labels: sc.labels, datasets:[{ label:"Count", data: sc.values }] },
+    options:{ plugins:{ legend:{display:false} }, scales:{y:{beginAtZero:true,ticks:{precision:0}}} }
+  });
+
+  const tl = aggTimeline();
+  if (lineChart) lineChart.destroy();
+  lineChart = new Chart(document.getElementById("line").getContext("2d"), {
+    type:"line",
+    data:{ labels: tl.labels, datasets:[{ label:"Items expiring", data: tl.values, tension:.3, fill:false }] },
+    options:{ plugins:{ legend:{display:false} }, scales:{y:{beginAtZero:true,ticks:{precision:0}}} }
+  });
+}
+
+/* Download chart */
+function downloadImage(chart, filename="chart.png"){
+  const url = chart.toBase64Image();
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+}
+
+/* Initialize */
+refresh();
+</script>
+</body>
+</html>
+

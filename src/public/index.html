@@ -1,10 +1,15 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en" data-theme="light">
+=======
+<html lang="en">
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 <head>
   <meta charset="UTF-8" />
   <title>EcoBite • Inventory</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<<<<<<< HEAD
 
   <style>
     /*****************************************
@@ -258,6 +263,89 @@
 <body>
 
   <!-- HERO -->
+=======
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280;
+      --primary:#2563eb; --success:#10b981; --warn:#d97706; --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+
+    /* 顶部大图 */
+    header{background: url("/images/index_hero.jpg") center/cover no-repeat;
+  position: relative;
+  padding: 56px 20px;
+  color: #fff;}
+    header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+    .hero{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+    .hero h1{margin:0;font-size:34px;font-weight:900;letter-spacing:.2px}
+    .hero p{margin:6px 0 0;opacity:.95}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.light{background:#fff;color:#111}
+    .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
+
+    main{max-width:1100px;margin:20px auto;padding:0 16px;display:grid;gap:16px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+    .muted{color:var(--muted)}
+    .tag{padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700;font-size:12px}
+
+    /* 这几个小卡片数字 */
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .kpi{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff}
+    .kpi h4{margin:0 0 6px;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+    .kpi .num{font-size:22px;font-weight:800}
+
+    /* 表单 */
+    .row{display:grid;gap:10px}
+    .row.cols-5{grid-template-columns:1.2fr .7fr 1fr 1fr auto}
+    .row.cols-4{grid-template-columns:1fr 1fr 1fr auto}
+    input,select{padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:#fff}
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.secondary{background:#e5e7eb;color:#111}
+
+    /* 列表表格 */
+    table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden}
+    th,td{padding:10px 8px;border-bottom:1px solid var(--border);font-size:14px;text-align:left}
+    th{color:var(--muted);background:#fafafa;user-select:none;cursor:pointer}
+    tbody tr:hover{background:#f3f4f6}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+    .b-available{background:#e5f3ff;color:#075985}
+    .b-near{background:#fff3e6;color:#b45309}
+    .b-expired{background:#fee2e2;color:#991b1b}
+    .b-donated{background:#e8fff6;color:#065f46}
+
+    /* 批量操作条 */
+    .bulkbar{display:none;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+
+    /* 右下角小提示 */
+    .toast{position:fixed;right:18px;bottom:18px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.25s;z-index:999}
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    /* 编辑弹窗(一开始别显示) */
+    #editModal{
+      display:none;             /* 先别显示 */
+      position:fixed; inset:0; background:rgba(0,0,0,.5);
+      justify-content:center; align-items:center; z-index:1000;
+    }
+    #editCard{background:#fff;padding:20px;border-radius:12px;width:360px;max-width:92vw;border:1px solid var(--border)}
+    #editCard h3{margin:0 0 10px}
+    #editCard .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+
+    footer{margin:28px 0 18px;text-align:center;color:var(--muted);font-size:13px}
+
+    @media(max-width:920px){
+      .kpis{grid-template-columns:repeat(2,1fr)}
+      .row.cols-5{grid-template-columns:1fr}
+      .row.cols-4{grid-template-columns:1fr}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   <header>
     <div class="hero">
       <div>
@@ -265,16 +353,24 @@
         <p>Plan meals, track expiry, and donate smartly.</p>
       </div>
       <div class="hero-actions">
+<<<<<<< HEAD
         <button class="btn light" onclick="goHome()">← Home</button>
         <button class="btn theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+=======
+        <button class="btn light" onclick="goHome()">← Back to Home</button>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
         <button class="btn ghost" onclick="logout()">Logout</button>
       </div>
     </div>
   </header>
 
   <main>
+<<<<<<< HEAD
 
     <!-- KPI -->
+=======
+    <!-- 数字概览 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     <section class="card">
       <div class="kpis">
         <div class="kpi"><h4>Total</h4><div class="num" id="kpiTotal">0</div></div>
@@ -285,6 +381,7 @@
       </div>
     </section>
 
+<<<<<<< HEAD
     <!-- Add Item -->
     <section class="card">
       <div class="row cols-5">
@@ -292,10 +389,23 @@
         <input id="quantity" type="number" placeholder="Quantity"/>
         <select id="category">
           <option>Pantry</option><option>Refrigerated</option><option>Frozen</option>
+=======
+    <!-- 快速加 -->
+    <section class="card">
+      <div class="row cols-5">
+        <span class="tag" style="align-self:center">Add Item</span>
+        <input id="name" placeholder="Name"/>
+        <input id="quantity" type="number" placeholder="Quantity"/>
+        <select id="category">
+          <option>Pantry</option>
+          <option>Refrigerated</option>
+          <option>Frozen</option>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
         </select>
         <input id="expiry" type="date"/>
         <button class="btn primary" onclick="addItem()">Add</button>
       </div>
+<<<<<<< HEAD
       <div id="msgAdd" class="muted"></div>
     </section>
 
@@ -306,6 +416,21 @@
         <select id="fcat" onchange="render()">
           <option value="">All categories</option>
           <option>Pantry</option><option>Refrigerated</option><option>Frozen</option>
+=======
+      <div id="msgAdd" class="muted" style="margin-top:6px"></div>
+    </section>
+
+    <!-- 筛选 + 导出 -->
+    <section class="card">
+      <div class="row cols-4">
+        <span class="tag" style="align-self:center">Filter</span>
+        <input id="q" placeholder="Search name..." oninput="render()"/>
+        <select id="fcat" onchange="render()">
+          <option value="">All categories</option>
+          <option>Pantry</option>
+          <option>Refrigerated</option>
+          <option>Frozen</option>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
         </select>
         <select id="fstat" onchange="render()">
           <option value="">All status</option>
@@ -316,7 +441,10 @@
         </select>
         <button class="btn secondary" onclick="exportCSV()">Export CSV</button>
       </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
       <div class="bulkbar" id="bulkBar">
         <div><strong id="selCount">0</strong> selected</div>
         <div style="display:flex;gap:8px">
@@ -326,32 +454,51 @@
       </div>
     </section>
 
+<<<<<<< HEAD
     <!-- TABLE -->
+=======
+    <!-- 列表 -->
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     <section class="card">
       <table>
         <thead>
           <tr>
+<<<<<<< HEAD
             <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
+=======
+            <th style="width:34px"><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
             <th onclick="sortBy('name')">Name</th>
             <th onclick="sortBy('quantity')">Qty</th>
             <th onclick="sortBy('category')">Category</th>
             <th onclick="sortBy('expiry_date')">Expiry</th>
             <th onclick="sortBy('status')">Status</th>
+<<<<<<< HEAD
             <th>Actions</th>
+=======
+            <th style="width:230px">Actions</th>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
           </tr>
         </thead>
         <tbody id="list"></tbody>
       </table>
     </section>
 
+<<<<<<< HEAD
     <!-- REPORT CHART -->
     <section class="card">
+=======
+    <!-- 报表 -->
+    <section class="card">
+      <h3 style="margin:0 0 10px">Report</h3>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
       <canvas id="chart" height="130"></canvas>
     </section>
   </main>
 
   <footer>© EcoBite Inventory Management</footer>
 
+<<<<<<< HEAD
   <!-- EDIT MODAL -->
   <div id="editModal">
     <div id="editCard">
@@ -362,6 +509,20 @@
         <option>Pantry</option><option>Refrigerated</option><option>Frozen</option>
       </select>
       <input id="editExp" type="date"/>
+=======
+  <!-- 编辑弹窗 -->
+  <div id="editModal">
+    <div id="editCard">
+      <h3>Edit Item</h3>
+      <input id="editName" placeholder="Name" />
+      <input id="editQty" type="number" placeholder="Quantity" />
+      <select id="editCat">
+        <option>Pantry</option>
+        <option>Refrigerated</option>
+        <option>Frozen</option>
+      </select>
+      <input id="editExp" type="date" />
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
       <div class="actions">
         <button class="btn secondary" onclick="closeEdit()">Cancel</button>
         <button class="btn primary" onclick="saveEdit()">Save</button>
@@ -369,6 +530,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- TOAST -->
   <div id="toast">Saved</div>
 
@@ -385,10 +547,22 @@ function headersJSON(){
 }
 function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
 
+=======
+  <!-- 小提示框 -->
+  <div class="toast" id="toast">Saved</div>
+
+<script>
+/* 常用的函数 */
+const $ = s => document.querySelector(s);
+function getToken(){ return localStorage.getItem("token") || ""; }
+function headersJSON(){ return { "Authorization":"Bearer "+getToken(), "Content-Type":"application/json" }; }
+function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 if (!getToken()) location.href="/login.html";
 
 function goHome(){ location.href="/"; }
 function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
+<<<<<<< HEAD
 
 function toast(msg){
   const t = $("#toast");
@@ -481,10 +655,74 @@ function filtered(){
 
     return (va<vb? -1: va>vb? 1: 0) * (sortAsc?1:-1);
   });
+=======
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1600); }
+
+/* 一些全局变量 */
+let allItems = [];
+let sortKey = "expiry_date";
+let sortAsc = true;
+let chart;
+
+/* 一次拉全量数据 */
+async function refreshAll(){
+  // 数字和图表用的
+  const r = await fetch("/report", { headers: headersAuth() }).then(r=>r.json());
+  $("#kpiTotal").textContent = (r.Pantry||0) + (r.Refrigerated||0) + (r.Frozen||0);
+  $("#kpiNear").textContent = r.NearExpiry||0;
+  $("#kpiExp").textContent = r.Expired||0;
+  $("#kpiDon").textContent = r.Donated||0;
+  $("#kpiAvail").textContent = r.Available||0;
+
+  // 清单
+  const list = await fetch("/inventory", { headers: headersAuth() }).then(r=>r.json());
+  allItems = list;
+  render();
+
+  drawChart(r);
+}
+
+/* 画上面的柱状图 */
+function drawChart(r){
+  const ctx = document.getElementById("chart").getContext("2d");
+  const catLabels = ["Pantry","Refrigerated","Frozen"];
+  const catValues = catLabels.map(k=>r[k]||0);
+  const statLabels = ["Available","NearExpiry","Expired","Donated"];
+  const statValues = statLabels.map(k=>r[k]||0);
+  if (chart) chart.destroy();
+  chart = new Chart(ctx,{
+    type:"bar",
+    data:{ labels:[...catLabels, ...statLabels], datasets:[{label:"Count", data:[...catValues, ...statValues]}] },
+    options:{ responsive:true, plugins:{legend:{display:false}, title:{display:true,text:"Categories & Statuses"}}, scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
+  });
+}
+
+/* 渲染 / 筛选 / 排序 */
+function filtered(){
+  const q = ($("#q").value||"").toLowerCase();
+  const fc = $("#fcat").value;
+  const fs = $("#fstat").value;
+  let arr = allItems.filter(it=>{
+    const okQ = !q || (it.name||"").toLowerCase().includes(q);
+    const okC = !fc || it.category===fc;
+    const okS = !fs || it.status===fs;
+    return okQ && okC && okS;
+  });
+  arr.sort((a,b)=>{
+    let va=a[sortKey], vb=b[sortKey];
+    if (sortKey==="expiry_date") { va = new Date(a.expiry_date); vb = new Date(b.expiry_date); }
+    if (typeof va==="string") { va=va.toLowerCase(); vb=String(vb).toLowerCase(); }
+    if (va<vb) return sortAsc?-1:1;
+    if (va>vb) return sortAsc?1:-1;
+    return 0;
+  });
+  return arr;
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 }
 
 function render(){
   const items = filtered();
+<<<<<<< HEAD
   const tbody = $("#list");
   tbody.innerHTML = "";
   $("#checkAll").checked=false;
@@ -498,6 +736,14 @@ function render(){
       "b-available";
 
     const tr = document.createElement("tr");
+=======
+  const tbody = $("#list"); tbody.innerHTML="";
+  $("#checkAll").checked=false; updateBulkBar();
+
+  items.forEach(it=>{
+    const tr = document.createElement("tr");
+    const badge = it.status==="donated" ? "b-donated" : it.status==="expired" ? "b-expired" : it.status==="near_expiry" ? "b-near" : "b-available";
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     tr.innerHTML = `
       <td><input type="checkbox" class="rowcheck" data-id="${it.id}" onchange="updateBulkBar()"></td>
       <td>${it.name}</td>
@@ -509,12 +755,17 @@ function render(){
         <button class="btn secondary" onclick="openEdit(${it.id})">Edit</button>
         <button class="btn secondary" onclick="donateItem(${it.id})">Donate</button>
         <button class="btn primary" onclick="delItem(${it.id})">Delete</button>
+<<<<<<< HEAD
       </td>
     `;
+=======
+      </td>`;
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
     tbody.appendChild(tr);
   });
 }
 
+<<<<<<< HEAD
 function sortBy(k){
   if(sortKey===k) sortAsc = !sortAsc;
   else { sortKey=k; sortAsc=true; }
@@ -524,11 +775,20 @@ function sortBy(k){
 /************************************
  *  BULK ACTIONS
  ************************************/
+=======
+function sortBy(key){
+  if (sortKey===key) sortAsc=!sortAsc; else { sortKey=key; sortAsc=true; }
+  render();
+}
+
+/* 批量操作 */
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 function toggleAll(box){
   document.querySelectorAll(".rowcheck").forEach(ch=>ch.checked=box.checked);
   updateBulkBar();
 }
 function selectedIds(){
+<<<<<<< HEAD
   return [...document.querySelectorAll(".rowcheck:checked")].map(x=>Number(x.dataset.id));
 }
 function updateBulkBar(){
@@ -544,10 +804,26 @@ async function bulkDonate(){
 
   for(const id of ids){
     await fetch(`/inventory/${id}/donate`, { method:"POST", headers:headersAuth() });
+=======
+  return Array.from(document.querySelectorAll(".rowcheck:checked")).map(x=>Number(x.dataset.id));
+}
+function updateBulkBar(){
+  const ids = selectedIds();
+  $("#bulkBar").style.display = ids.length? "flex":"none";
+  $("#selCount").textContent = ids.length;
+}
+
+async function bulkDonate(){
+  const ids = selectedIds(); if(!ids.length) return;
+  if(!confirm(`Donate ${ids.length} items?`)) return;
+  for(const id of ids){
+    await fetch(`/inventory/${id}/donate`, { method:"POST", headers: headersAuth() });
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   }
   toast("Donated ✓");
   refreshAll();
 }
+<<<<<<< HEAD
 
 async function bulkDelete(){
   const ids = selectedIds();
@@ -556,21 +832,35 @@ async function bulkDelete(){
 
   for(const id of ids){
     await fetch(`/inventory/${id}`, { method:"DELETE", headers:headersAuth() });
+=======
+async function bulkDelete(){
+  const ids = selectedIds(); if(!ids.length) return;
+  if(!confirm(`Delete ${ids.length} items?`)) return;
+  for(const id of ids){
+    await fetch(`/inventory/${id}`, { method:"DELETE", headers: headersAuth() });
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   }
   toast("Deleted ✓");
   refreshAll();
 }
 
+<<<<<<< HEAD
 /************************************
  *  CRUD
  ************************************/
 async function addItem(){
+=======
+/* 增删改查 */
+async function addItem(){
+  $("#msgAdd").textContent="";
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   const body = {
     name: $("#name").value.trim(),
     quantity: Number($("#quantity").value),
     category: $("#category").value,
     expiry_date: $("#expiry").value
   };
+<<<<<<< HEAD
   const r = await fetch("/inventory", {
     method:"POST", headers:headersJSON(), body:JSON.stringify(body)
   });
@@ -582,23 +872,43 @@ async function addItem(){
   }else{
     const j = await r.json().catch(()=>({}));
     $("#msgAdd").textContent = j.error || "Add failed";
+=======
+  const res = await fetch("/inventory", { method:"POST", headers: headersJSON(), body: JSON.stringify(body) });
+  if(res.ok){
+    $("#msgAdd").textContent = "Added ✓";
+    $("#name").value=""; $("#quantity").value=""; $("#category").value="Pantry"; $("#expiry").value="";
+    toast("Added ✓");
+    refreshAll();
+  }else{
+    const j=await res.json().catch(()=>({})); $("#msgAdd").textContent=j.error||"Add failed";
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   }
 }
 
 async function donateItem(id){
   if(!confirm("Mark as donated?")) return;
+<<<<<<< HEAD
   await fetch(`/inventory/${id}/donate`, { method:"POST", headers:headersAuth() });
+=======
+  const res = await fetch(`/inventory/${id}/donate`, { method:"POST", headers: headersAuth() });
+  if(!res.ok){ const j=await res.json().catch(()=>({})); alert(j.error||"Donate failed"); return; }
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   toast("Donated ✓");
   refreshAll();
 }
 
 async function delItem(id){
   if(!confirm("Delete this item?")) return;
+<<<<<<< HEAD
   await fetch(`/inventory/${id}`, { method:"DELETE", headers:headersAuth() });
+=======
+  await fetch(`/inventory/${id}`, { method:"DELETE", headers: headersAuth() });
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   toast("Deleted ✓");
   refreshAll();
 }
 
+<<<<<<< HEAD
 /************************************
  *  EDIT ITEM
  ************************************/
@@ -606,11 +916,19 @@ function openEdit(id){
   const it = allItems.find(x=>x.id===id);
   if(!it) return;
 
+=======
+/* 编辑弹窗逻辑 */
+let editingId = null;
+
+function openEdit(id){
+  const it = allItems.find(x=>x.id===id); if(!it) return;
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   editingId = id;
   $("#editName").value = it.name;
   $("#editQty").value = it.quantity;
   $("#editCat").value = it.category;
   $("#editExp").value = String(it.expiry_date).slice(0,10);
+<<<<<<< HEAD
 
   $("#editModal").style.display = "flex";
 }
@@ -619,12 +937,23 @@ function closeEdit(){
   editingId = null;
 }
 async function saveEdit(){
+=======
+  $("#editModal").style.display = "flex";   // 开
+}
+function closeEdit(){
+  $("#editModal").style.display = "none";   // 关
+  editingId = null;
+}
+async function saveEdit(){
+  if(!editingId) return;
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   const body = {
     name: $("#editName").value.trim(),
     quantity: Number($("#editQty").value),
     category: $("#editCat").value,
     expiry_date: $("#editExp").value
   };
+<<<<<<< HEAD
   await fetch(`/inventory/${editingId}`, {
     method:"PUT", headers:headersJSON(), body:JSON.stringify(body)
   });
@@ -644,11 +973,27 @@ function exportCSV(){
     ...rows.map(r => [r.id, r.name, r.quantity, r.category, String(r.expiry_date).slice(0,10), r.status].join(","))
   ];
   const blob = new Blob([lines.join("\n")],{type:"text/csv"});
+=======
+  const res = await fetch(`/inventory/${editingId}`, { method:"PUT", headers: headersJSON(), body: JSON.stringify(body) });
+  if(res.ok){ closeEdit(); toast("Updated ✓"); refreshAll(); }
+  else alert("Update failed");
+}
+
+/* 导出CSV */
+function exportCSV(){
+  const rows = filtered();
+  const head = ["id","name","quantity","category","expiry_date","status"];
+  const lines = [head.join(",")].concat(
+    rows.map(r => [r.id, csv(r.name), r.quantity, r.category, String(r.expiry_date).slice(0,10), r.status].join(","))
+  );
+  const blob = new Blob([lines.join("\n")], {type:"text/csv;charset=utf-8;"});
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "inventory.csv";
   a.click();
 }
+<<<<<<< HEAD
 
 /************************************
  *  INIT
@@ -657,5 +1002,12 @@ refreshAll();
 
 </script>
 
+=======
+function csv(s){ if(s==null) return ""; s=String(s).replace(/"/g,'""'); return `"${s}"`; }
+
+/* 开始跑 */
+refreshAll();
+</script>
+>>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 </body>
 </html>

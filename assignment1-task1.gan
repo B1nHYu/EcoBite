@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="assignment1" company="HELP UNIVERSITY" webLink="http://" view-date="2025-08-19" view-index="0" gantt-divider-location="634" resource-divider-location="300" version="3.3.3316" locale="zh_CN">
+    <description/>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="名称" width="102" order="0"/>
+        <field id="tpd4" name="开始日期" width="102" order="1"/>
+        <field id="tpd5" name="结束日期" width="102" order="2"/>
+        <field id="tpd6" name="持续" width="102" order="3"/>
+        <field id="tpd9" name="前置任务" width="102" order="4"/>
+        <field id="tpd13" name="资源" width="110" order="5"/>
+        <field id="tpd15" name="备注" width="20" order="6"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="名称" width="210" order="0"/>
+        <field id="1" name="默认角色" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="0" mon="0" tue="0" wed="0" thu="0" fri="0" sat="0"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" uid="1675336fae854e53b1ffe0cbd0ca8efe" name="1.Initiation &amp; Planning" meeting="false" start="2025-08-20" duration="2" complete="0" expand="true">
+            <depend id="1" type="2" difference="0" hardness="Strong"/>
+            <depend id="2" type="1" difference="0" hardness="Strong"/>
+            <task id="6" uid="93dcaf2a5fbe4ae2847719a9c8e7778e" name="1.1 Form team &amp; assign roles" meeting="false" start="2025-08-20" duration="1" complete="0" expand="true"/>
+            <task id="7" uid="dde2fd2a4b2a41d68c71f5d27ca8d3a7" name="1.2 Review SavePlate case study" meeting="false" start="2025-08-21" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="1" uid="2fafe798a36a49d593d2dc75b39c5204" name="2.Scope &amp; Schedule" meeting="false" start="2025-08-22" duration="2" complete="0" expand="true">
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <task id="8" uid="6ae938c783364f88950422e4b1e4706b" name="2.1 Draft In-scope &amp; Out-of-scope" meeting="false" start="2025-08-22" duration="1" complete="0" expand="true"/>
+            <task id="9" uid="878ff2e10b474af496b55f8867487a73" name="2.2 Create WBS &amp; Gantt Chart" meeting="false" start="2025-08-23" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="2" uid="c36233c4ba1f4e1dba736c89b4eecd23" name="3.Technical Decisions" meeting="false" start="2025-08-22" duration="3" complete="0" expand="true">
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <task id="10" uid="59a69ec6bfaa418c9eb4127b6ff50d9c" name="3.1 Choose technology stack" meeting="false" start="2025-08-22" duration="2" complete="0" expand="true"/>
+            <task id="11" uid="eda77e00e5fc47fb9fa7a4effd053958" name="3.2 Define development tools &amp; environment" meeting="false" start="2025-08-24" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="3" uid="34758a9ae111494ab0170d5558b1e61e" name="4.Risk Management" meeting="false" start="2025-08-25" duration="2" complete="0" expand="true">
+            <depend id="4" type="2" difference="0" hardness="Strong"/>
+            <task id="12" uid="3583b89a190b4611bd02071655a17c4f" name="4.1 Identify project risks" meeting="false" start="2025-08-25" duration="1" complete="0" expand="true"/>
+            <task id="13" uid="7a52c871879a413f97d70e519f3d1d48" name="4.2 Plan mitigation strategies" meeting="false" start="2025-08-26" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="4" uid="2f05d35ff1034bc98b104e711da2a794" name="5.Document Production" meeting="false" start="2025-08-27" duration="7" complete="0" expand="true">
+            <depend id="5" type="2" difference="0" hardness="Strong"/>
+            <task id="14" uid="129fc47be06e42d0b6f143a1eb5c6d9d" name="5.1 Draft report sections" meeting="false" start="2025-08-27" duration="4" complete="0" expand="true"/>
+            <task id="15" uid="e9fe3cd7f08c4803a9f0f6d0cb64b668" name="5.2 Edit, format, proofread" meeting="false" start="2025-08-31" duration="3" complete="0" expand="true"/>
+        </task>
+        <task id="5" uid="1bb89c5bbeb748eb85576bc9330bb17f" name="6.Finalise &amp; Submit" meeting="false" start="2025-09-03" duration="6" complete="0" expand="true">
+            <task id="16" uid="bba2a99e888f432a962102282064076e" name="6.1 Compile final version" meeting="false" start="2025-09-03" duration="5" complete="0" expand="true"/>
+            <task id="17" uid="a5f414df30b547a6aa6f3fa9110cb772" name="6.2 Submit assignment" meeting="false" start="2025-09-08" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="18" uid="14f1f9170d6d4e719eee59315340f5b7" name="Milestones" meeting="false" start="2025-08-21" duration="18" complete="0" expand="true">
+            <task id="24" uid="e26907a640134ce79f5fc91c58a04f56" name="M1 Team formed &amp; roles assigned" meeting="true" start="2025-08-21" duration="0" complete="0" expand="true"/>
+            <task id="19" uid="b37df5f57dda462db737063d67f26da7" name="M2 Scope &amp; objectives confirmed" meeting="true" start="2025-08-21" duration="0" complete="0" expand="true"/>
+            <task id="20" uid="deb756e6ccaa4e7c84934a6b40659e1e" name="M3 Baseline schedule set" meeting="true" start="2025-08-25" duration="0" complete="0" expand="true"/>
+            <task id="21" uid="46c5a467130e4b8f8f223315324ab5df" name="M4 Risk analysis completed" meeting="true" start="2025-08-26" duration="0" complete="0" expand="true"/>
+            <task id="22" uid="e7db4a68ca9e4a348b753d879341201b" name="M5 Draft report completed" meeting="true" start="2025-09-02" duration="0" complete="0" expand="true"/>
+            <task id="23" uid="16eb3f7f8c6a4dcb8b7c1343f7f4c208" name="M6 Task-1 submitted" meeting="true" start="2025-09-08" duration="0" complete="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="0" name="Leader" function="Default:0" contacts="" phone=""/>
+        <resource id="1" name="A" function="Default:0" contacts="" phone=""/>
+        <resource id="2" name="B" function="Default:0" contacts="" phone=""/>
+        <resource id="3" name="All" function="Default:0" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="0" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="1" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="3" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="4" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="5" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="4" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="0" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="3" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="4" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <previous>
+        <previous-tasks name="">
+            <previous-task id="0" start="2025-08-20" duration="2" meeting="false" super="true"/>
+            <previous-task id="6" start="2025-08-20" duration="1" meeting="false" super="false"/>
+            <previous-task id="7" start="2025-08-21" duration="1" meeting="false" super="false"/>
+            <previous-task id="1" start="2025-08-22" duration="2" meeting="false" super="true"/>
+            <previous-task id="8" start="2025-08-22" duration="1" meeting="false" super="false"/>
+            <previous-task id="9" start="2025-08-23" duration="1" meeting="false" super="false"/>
+            <previous-task id="2" start="2025-08-22" duration="3" meeting="false" super="true"/>
+            <previous-task id="10" start="2025-08-22" duration="2" meeting="false" super="false"/>
+            <previous-task id="11" start="2025-08-24" duration="1" meeting="false" super="false"/>
+            <previous-task id="3" start="2025-08-25" duration="2" meeting="false" super="true"/>
+            <previous-task id="12" start="2025-08-25" duration="1" meeting="false" super="false"/>
+            <previous-task id="13" start="2025-08-26" duration="1" meeting="false" super="false"/>
+            <previous-task id="4" start="2025-08-27" duration="7" meeting="false" super="true"/>
+            <previous-task id="14" start="2025-08-27" duration="4" meeting="false" super="false"/>
+            <previous-task id="15" start="2025-08-31" duration="3" meeting="false" super="false"/>
+            <previous-task id="5" start="2025-09-03" duration="6" meeting="false" super="true"/>
+            <previous-task id="16" start="2025-09-03" duration="5" meeting="false" super="false"/>
+            <previous-task id="17" start="2025-09-08" duration="1" meeting="false" super="false"/>
+            <previous-task id="18" start="2025-08-21" duration="18" meeting="false" super="true"/>
+            <previous-task id="24" start="2025-08-21" duration="0" meeting="true" super="false"/>
+            <previous-task id="19" start="2025-08-21" duration="0" meeting="true" super="false"/>
+            <previous-task id="20" start="2025-08-25" duration="0" meeting="true" super="false"/>
+            <previous-task id="21" start="2025-08-26" duration="0" meeting="true" super="false"/>
+            <previous-task id="22" start="2025-09-02" duration="0" meeting="true" super="false"/>
+            <previous-task id="23" start="2025-09-08" duration="0" meeting="true" super="false"/>
+        </previous-tasks>
+    </previous>
+    <roles roleset-name="Default"/>
+</project>
