@@ -1,14 +1,8 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en" data-theme="light">
-=======
-<html lang="en">
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-<head>
+<html lang="en" data-theme="light"><head>
   <meta charset="UTF-8" />
-  <title>EcoBite • Notifications</title>
+  <title>EcoBite �?Notifications</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<<<<<<< HEAD
 
   <style>
     /* ======================================================================================
@@ -173,84 +167,22 @@
     }
   </style>
 </head>
-
-=======
-  <style>
-    :root{
-      --bg:#f6f7fb; --card:#fff; --border:#e5e7eb; --text:#111827; --muted:#6b7280;
-      --warn:#d97706; --danger:#ef4444; --ok:#10b981; --primary:#2563eb;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-
-    header{background:url("https://images.unsplash.com/photo-1505575967455-40e256f73376?q=80&w=1600&auto=format&fit=crop") center/cover no-repeat;position:relative;padding:56px 20px;color:#fff}
-    header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
-    .hero{position:relative;z-index:1;max-width:1000px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
-    .hero h1{margin:0;font-size:34px;font-weight:900}
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .btn{padding:10px 14px;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-    .btn.light{background:#fff;color:#111}
-    .btn.ghost{background:transparent;border:2px solid #fff;color:#fff}
-
-    main{max-width:1000px;margin:20px auto;padding:0 16px;display:grid;gap:16px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px}
-    .muted{color:var(--muted)}
-    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:800}
-    .b-warn{background:#fff1dc;color:#9a5b08}
-    .b-danger{background:#fee2e2;color:#991b1b}
-    .b-ok{background:#e8fff6;color:#065f46}
-
-    .row{display:flex;gap:10px;align-items:center}
-    .pref{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .switch{appearance:none;width:42px;height:24px;background:#e5e7eb;border-radius:999px;position:relative;outline:0;cursor:pointer}
-    .switch:checked{background:#34d399}
-    .switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s}
-    .switch:checked::after{left:21px}
-
-    .list{display:grid;gap:10px}
-    .item{border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;display:flex;justify-content:space-between;align-items:center}
-    .left{display:flex;gap:10px;align-items:center}
-    .dot{width:10px;height:10px;border-radius:50%}
-    .dot.warn{background:#f59e0b}
-    .dot.danger{background:#ef4444}
-    .dot.ok{background:#10b981}
-    .meta{font-size:12px;color:var(--muted)}
-    .actions{display:flex;gap:6px}
-    .btn.small{padding:6px 10px;border-radius:8px}
-    .btn.secondary{background:#e5e7eb;color:#111}
-    .btn.primary{background:var(--primary);color:#fff}
-
-    .empty{padding:20px;text-align:center;color:var(--muted)}
-  </style>
-</head>
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
 <body>
   <header>
     <div class="hero">
       <div>
         <h1>Notifications</h1>
-<<<<<<< HEAD
         <div class="muted">Smart expiry alerts and weekly meal suggestions.</div>
       </div>
 
       <div class="hero-actions">
-        <button class="btn light" onclick="goHome()">← Home</button>
+        <button class="btn light" onclick="goHome()">�?Home</button>
         <button class="btn light" onclick="goInventory()">Inventory</button>
-        <button class="btn light" onclick="goPlanner()">Planner</button>
-=======
-        <div class="muted">Near-expiry, expired and donated summaries.</div>
-      </div>
-      <div class="hero-actions">
-        <button class="btn light" onclick="goHome()">← Home</button>
-        <button class="btn light" onclick="goInventory()">Inventory</button>
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-        <button class="btn ghost" onclick="logout()">Logout</button>
+        <button class="btn light" onclick="goPlanner()">Planner</button>        <button class="btn ghost" onclick="logout()">Logout</button>
       </div>
     </div>
   </header>
 
-<<<<<<< HEAD
   <!-- MAIN BODY -->
   <main>
     <!-- SUMMARY -->
@@ -297,142 +229,32 @@
     <!-- NEAR EXPIRY -->
     <section class="card">
       <div class="section-title">
-        <h3>Near-expiry (≤ 3 days) <span class="badge b-warn" id="cNear">0</span></h3>
-=======
-  <main>
-    <!-- preferences -->
-    <section class="card">
-      <div class="section-title">
-        <h3 style="margin:0">Preferences</h3>
-      </div>
-      <div class="pref">
-        <label class="row">
-          <input id="prefDaily" type="checkbox" class="switch">
-          <span>Daily reminder (simulate)</span>
-        </label>
-        <label class="row">
-          <input id="prefNearOnly" type="checkbox" class="switch">
-          <span>Only near-expiry</span>
-        </label>
-        <button class="btn secondary small" onclick="markAllRead()">Mark all as read</button>
-        <span id="countUnread" class="badge b-danger">0 unread</span>
-      </div>
-      <div class="muted" style="margin-top:6px">* 偏好仅存储在浏览器本地（localStorage），用于作业演示。</div>
-    </section>
-
-    <!-- near expiry -->
-    <section class="card">
-      <div class="section-title">
-        <h3 style="margin:0">Near-expiry (≤ 3 days) <span class="badge b-warn" id="cNear">0</span></h3>
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-        <button class="btn small secondary" onclick="markSectionRead('near')">Mark section read</button>
+        <h3>Near-expiry (�?3 days) <span class="badge b-warn" id="cNear">0</span></h3>        <button class="btn small secondary" onclick="markSectionRead('near')">Mark section read</button>
       </div>
       <div class="list" id="listNear"></div>
     </section>
 
-<<<<<<< HEAD
     <!-- EXPIRED -->
     <section class="card">
       <div class="section-title">
-        <h3>Expired <span class="badge b-danger" id="cExpired">0</span></h3>
-=======
-    <!-- expired -->
-    <section class="card">
-      <div class="section-title">
-        <h3 style="margin:0">Expired <span class="badge b-danger" id="cExpired">0</span></h3>
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-        <button class="btn small secondary" onclick="markSectionRead('expired')">Mark section read</button>
+        <h3>Expired <span class="badge b-danger" id="cExpired">0</span></h3>        <button class="btn small secondary" onclick="markSectionRead('expired')">Mark section read</button>
       </div>
       <div class="list" id="listExpired"></div>
     </section>
 
-<<<<<<< HEAD
     <!-- DONATED -->
     <section class="card">
       <div class="section-title">
-        <h3>Donated <span class="badge b-ok" id="cDonated">0</span></h3>
-=======
-    <!-- donated -->
-    <section class="card">
-      <div class="section-title">
-        <h3 style="margin:0">Donated <span class="badge b-ok" id="cDonated">0</span></h3>
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-        <button class="btn small secondary" onclick="markSectionRead('donated')">Mark section read</button>
+        <h3>Donated <span class="badge b-ok" id="cDonated">0</span></h3>        <button class="btn small secondary" onclick="markSectionRead('donated')">Mark section read</button>
       </div>
       <div class="list" id="listDonated"></div>
     </section>
-<<<<<<< HEAD
 
   </main>
 
 <script>
 /* ======================================================================================
-   AUTH & NAVIGATION
-====================================================================================== */
-function getToken(){ return localStorage.getItem("token") || ""; }
-function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
-if(!getToken()) location.href="/login.html";
-
-function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
-function goHome(){ location.href="/"; }
-function goInventory(){ location.href="/index.html"; }
-function goPlanner(){ location.href="/planner.html"; }
-
-/* ======================================================================================
-   USER KEY FOR LOCALSTORAGE
-====================================================================================== */
-function getUserKey(){
-  try{
-    const payload = JSON.parse(atob(getToken().split(".")[1]));
-    return payload.email || "user";
-  }catch{ return "user"; }
-}
-const storeKey = k => `ecobite:${getUserKey()}:${k}`;
-
-/* ======================================================================================
-   STATE
-====================================================================================== */
-let ITEMS = [];
-let READ = {};     // unread tracking
-let PREF = { daily:false, nearOnly:false };
-
-/* ======================================================================================
-   LOAD PREFERENCES
-====================================================================================== */
-function loadPrefs(){
-  try{ PREF = JSON.parse(localStorage.getItem(storeKey("notif:prefs"))) || PREF; }catch{}
-  document.getElementById("prefDaily").checked = PREF.daily;
-  document.getElementById("prefNearOnly").checked = PREF.nearOnly;
-=======
-  </main>
-
-<script>
-/* ---- auth & nav ---- */
-function getToken(){ return localStorage.getItem("token") || ""; }
-function headersAuth(){ return { "Authorization":"Bearer "+getToken() }; }
-if (!getToken()) location.href="/login.html";
-function logout(){ localStorage.removeItem("token"); location.href="/login.html"; }
-function goHome(){ location.href="/"; }
-function goInventory(){ location.href="/index.html"; }
-
-function getUserKey(){
-  try { const payload = JSON.parse(atob(getToken().split(".")[1])); return payload.email || "user"; }
-  catch { return "user"; }
-}
-
-/* ---- state ---- */
-let ITEMS = [];
-let READ = {}; // { '<type>:<id>': true }
-let PREF = { daily:false, nearOnly:false };
-
-const storeKey = (k)=>`ecobite:${getUserKey()}:${k}`;
-
-function loadPrefs(){
-  try{ PREF = JSON.parse(localStorage.getItem(storeKey("notif:prefs"))) || PREF; }catch{}
-  document.getElementById("prefDaily").checked = !!PREF.daily;
-  document.getElementById("prefNearOnly").checked = !!PREF.nearOnly;
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-}
+   AUTH & NAVIGATION}
 function savePrefs(){
   PREF.daily = document.getElementById("prefDaily").checked;
   PREF.nearOnly = document.getElementById("prefNearOnly").checked;
@@ -441,119 +263,20 @@ function savePrefs(){
 document.getElementById("prefDaily").addEventListener("change", savePrefs);
 document.getElementById("prefNearOnly").addEventListener("change", savePrefs);
 
-<<<<<<< HEAD
 /* ======================================================================================
-   LOAD READ STATUS
-====================================================================================== */
-=======
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-function loadRead(){
+   LOAD READ STATUSfunction loadRead(){
   try{ READ = JSON.parse(localStorage.getItem(storeKey("notif:read"))) || {}; }catch{}
 }
 function saveRead(){
   localStorage.setItem(storeKey("notif:read"), JSON.stringify(READ));
 }
 
-<<<<<<< HEAD
 /* ======================================================================================
    NOTIFICATION KEY
-====================================================================================== */
-function itemKey(type,id){ return `${type}:${id}`; }
-
-
-/* ======================================================================================
-   SYSTEM NOTIFICATIONS
-====================================================================================== */
-async function loadSystemNotifications(){
-  const res = await fetch("/notifications", { headers: headersAuth() });
-  if(res.status === 401) return;
-
-  const rows = await res.json();
-  const host = document.getElementById("sysList");
-  host.innerHTML = "";
-  document.getElementById("sysCount").textContent = rows.length;
-
-  if(rows.length === 0){
-    host.innerHTML = `<div class="empty">No system notifications.</div>`;
-    return;
-  }
-
-  for(const n of rows){
-    host.insertAdjacentHTML("beforeend", `
-      <div class="item">
-        <div>
-          <strong>${n.title}</strong><br>
-          <span class="muted">${n.message}</span><br>
-          <span class="muted" style="font-size:12px">
-            ${new Date(n.created_at).toLocaleString()}
-          </span>
-        </div>
-      </div>
-    `);
-  }
-}
-
-
-
-
-
-/* ======================================================================================
-   MAIN REFRESH (Fetch inventory)
-====================================================================================== */
-async function refresh(){
-  const res = await fetch("/inventory",{ headers:headersAuth() });
-  if(res.status===401){ location.href="/login.html"; return; }
-
-  ITEMS = await res.json();
-
-  const today = new Date(); today.setHours(0,0,0,0);
-  const near=[], expired=[], donated=[];
-
-  for(const it of ITEMS){
-    const exp = new Date(it.expiry_date);
-    if(it.status==="donated"){
-      donated.push(it);
-    }else if(exp<today){
-      expired.push(it);
-    }else{
-      const diff = Math.ceil((exp-today)/86400000);
-      if(diff<=3) near.push(it);
-    }
-  }
-
-  render("Near",near,"warn");
-  render("Expired",expired,"danger");
-  render("Donated",donated,"ok");
-=======
-/* ---- load & compute ---- */
-async function refresh(){
-  const res = await fetch("/inventory", { headers: headersAuth() });
-  if (res.status === 401) { location.href="/login.html"; return; }
-  ITEMS = await res.json();
-
-  // build sections
-  const today = new Date(); today.setHours(0,0,0,0);
-  const near = [], expired = [], donated = [];
-  for (const it of ITEMS){
-    const exp = new Date(it.expiry_date);
-    if (it.status === "donated") donated.push(it);
-    else if (exp < today) expired.push(it);
-    else {
-      const diff = Math.ceil((exp - today)/86400000);
-      if (diff <= 3) near.push(it);
-    }
-  }
-
-  renderList("Near", near);
-  renderList("Expired", expired);
-  renderList("Donated", donated);
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-
   document.getElementById("cNear").textContent = near.length;
   document.getElementById("cExpired").textContent = expired.length;
   document.getElementById("cDonated").textContent = donated.length;
 
-<<<<<<< HEAD
   document.getElementById("sum-near").textContent = `Near Expiry: ${near.length}`;
   document.getElementById("sum-expired").textContent = `Expired: ${expired.length}`;
   document.getElementById("sum-donated").textContent = `Donated: ${donated.length}`;
@@ -565,95 +288,17 @@ async function refresh(){
 }
 
 /* ======================================================================================
-   RENDER ONE SECTION
-====================================================================================== */
-function render(type,arr,dot){
-  const idMap={ Near:"listNear", Expired:"listExpired", Donated:"listDonated" };
-  const host=document.getElementById(idMap[type]);
-  host.innerHTML="";
-
-  if(!arr.length){
-    host.innerHTML=`<div class="empty">No ${type.toLowerCase()} items.</div>`;
-    return;
-  }
-
-  for(const it of arr){
-    const key=itemKey(type.toLowerCase(),it.id);
-    const unread=!READ[key];
-
-    // days left
-    const today=new Date(); today.setHours(0,0,0,0);
-    const exp=new Date(it.expiry_date);
-    const diff=Math.ceil((exp-today)/86400000);
-    const left = diff<0 ? `${Math.abs(diff)} days overdue` : `${diff} days left`;
-
-    const html = `
-      <div class="item ${unread?"unread":""}">
-        <div class="left">
-          <span class="dot ${dot}"></span>
-          <div>
-            <strong>${it.name}</strong><br>
-            <span class="muted">${it.category} • ${it.expiry_date.slice(0,10)} • ${left}</span>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn small secondary" onclick="markRead('${key}')">
-            ${unread?"Mark Read":"Unread"}
-          </button>
-
-          <button class="btn small primary" onclick="addToPlanner('${it.name}')">
-            Add to Planner
-          </button>
-=======
-  updateUnreadCount();
-}
-
-function itemKey(type, id){ return `${type}:${id}`; }
-
-function renderList(type, arr){
-  const map = { Near:"listNear", Expired:"listExpired", Donated:"listDonated" };
-  const host = document.getElementById(map[type]);
-  host.innerHTML = "";
-  if (!arr.length){ host.innerHTML = `<div class="empty">No ${type.toLowerCase()} items.</div>`; return; }
-
-  for (const it of arr){
-    const k = itemKey(type.toLowerCase(), it.id);
-    const isRead = !!READ[k];
-    const cls = type==="Donated" ? "ok" : (type==="Expired" ? "danger" : "warn");
-    const meta = `${it.category} • exp ${String(it.expiry_date).slice(0,10)}`;
-    const html = `
-      <div class="item" style="opacity:${isRead?0.55:1}">
-        <div class="left">
-          <span class="dot ${cls}"></span>
-          <div>
-            <div><strong>${it.name}</strong></div>
-            <div class="meta">${meta}</div>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn small secondary" onclick="markRead('${k}', this)">${isRead?'Unread':'Mark read'}</button>
-          ${type!=="Donated" ? `<button class="btn small primary" onclick="toInventory()">View</button>` : ""}
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-        </div>
+   RENDER ONE SECTION        </div>
       </div>`;
     host.insertAdjacentHTML("beforeend", html);
   }
 }
 
-<<<<<<< HEAD
 /* ======================================================================================
-   MARK READ / UNREAD
-====================================================================================== */
-function markRead(k){
-=======
-function markRead(k, btn){
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-  READ[k] = !READ[k];
+   MARK READ / UNREAD  READ[k] = !READ[k];
   saveRead();
   refresh();
 }
-<<<<<<< HEAD
 function markSectionRead(sec){
   for(const it of ITEMS){
     const key=itemKey(sec,it.id);
@@ -669,108 +314,5 @@ function markAllRead(){
 }
 
 /* ======================================================================================
-   UNREAD COUNT
-====================================================================================== */
-function updateUnreadCount(){
-  const today=new Date(); today.setHours(0,0,0,0);
-  let count=0;
-
-  for(const it of ITEMS){
-    const exp=new Date(it.expiry_date);
-    let type=null;
-
-    if(it.status==="donated") type="donated";
-    else if(exp<today) type="expired";
-    else if(Math.ceil((exp-today)/86400000)<=3) type="near";
-
-    if(type && !READ[itemKey(type,it.id)]) count++;
-  }
-  document.getElementById("countUnread").textContent=`${count} unread`;
-}
-
-/* ======================================================================================
-   ADD TO MEAL PLANNER
-====================================================================================== */
-function addToPlanner(name){
-  alert(`Added "${name}" to planner!  
-(For demo, direct integration requires storing to localStorage and reloading planner.)`);
-
-  const today = new Date();
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - ((today.getDay()+6)%7));
-
-  const dateKey = monday.toISOString().slice(0,10);
-  const key = `ecobite:${getUserKey()}:planner:${dateKey}`;
-
-  let plan = JSON.parse(localStorage.getItem(key) || "{}");
-  plan[dateKey] = plan[dateKey] || { breakfast:[], lunch:[], dinner:[] };
-
-  plan[dateKey].breakfast.push({ name:name });
-
-  localStorage.setItem(key, JSON.stringify(plan));
-}
-
-/* ======================================================================================
-   THEME TOGGLE
-====================================================================================== */
-function toggleTheme(){
-  const body=document.documentElement;
-  const current=body.getAttribute("data-theme");
-  body.setAttribute("data-theme", current==="light"?"dark":"light");
-}
-
-/* ======================================================================================
-   INIT
-====================================================================================== */
-loadPrefs();
-loadRead();
-refresh();
-</script>
-
-=======
-function markSectionRead(section){
-  const list = document.querySelectorAll(`#list${capitalize(section)} .item`);
-  list.forEach(card=>{
-    const strong = card.querySelector("strong");
-    const id = findItemIdByName(strong?.textContent);
-    if (id != null){ READ[itemKey(section, id)] = true; }
-  });
-  saveRead();
-  refresh();
-}
-function markAllRead(){
-  for (const it of ITEMS){
-    ["near","expired","donated"].forEach(t => READ[itemKey(t, it.id)] = true);
-  }
-  saveRead();
-  refresh();
-}
-
-function findItemIdByName(name){
-  const it = ITEMS.find(x=>x.name===name);
-  return it ? it.id : null;
-}
-function updateUnreadCount(){
-  // 统计三类中未读的
-  const keys = new Set();
-  const today = new Date(); today.setHours(0,0,0,0);
-  for(const it of ITEMS){
-    const exp = new Date(it.expiry_date);
-    if (it.status==="donated") keys.add(itemKey("donated", it.id));
-    if (exp < today) keys.add(itemKey("expired", it.id));
-    else if (Math.ceil((exp - today)/86400000) <= 3) keys.add(itemKey("near", it.id));
-  }
-  let unread = 0;
-  keys.forEach(k => { if (!READ[k]) unread++; });
-  document.getElementById("countUnread").textContent = `${unread} unread`;
-}
-
-function toInventory(){ location.href="/index.html"; }
-function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
-
-/* ---- init ---- */
-loadPrefs(); loadRead(); refresh();
-</script>
->>>>>>> f7c9a771cebcb0ef4426b2e78c3f7cee0e1f9e4d
-</body>
+   UNREAD COUNT</body>
 </html>
